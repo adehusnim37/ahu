@@ -32,10 +32,17 @@ model pemeriksaanAPH {
   tgl_surat_kuasa      DateTime
   surat_permohonan     String
   bukti_permohonan     String
-  status               String?
+  status               Status    @default(Menunggu)
   recInsert            DateTime  @default(now())
   recUpdate            DateTime?
   isVerified           Boolean   @default(false)
   dateVerified         DateTime?
   CatatanTolak         String?
+}
+
+enum Status {
+  Menunggu
+  Diterima
+  Ditolak
+  Diproses
 }

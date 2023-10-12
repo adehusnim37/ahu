@@ -21,12 +21,12 @@ CREATE TABLE `pemeriksaanAPH` (
     `tgl_surat_kuasa` DATETIME(3) NOT NULL,
     `surat_permohonan` VARCHAR(191) NOT NULL,
     `bukti_permohonan` VARCHAR(191) NOT NULL,
-    `status` VARCHAR(191) NOT NULL,
+    `status` ENUM('Menunggu', 'Diterima', 'Ditolak') NOT NULL DEFAULT 'Menunggu',
     `recInsert` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `recUpdate` DATETIME(3) NOT NULL,
+    `recUpdate` DATETIME(3) NULL,
     `isVerified` BOOLEAN NOT NULL DEFAULT false,
-    `dateVerified` DATETIME(3) NOT NULL,
-    `CatatanTolak` VARCHAR(191) NOT NULL,
+    `dateVerified` DATETIME(3) NULL,
+    `CatatanTolak` VARCHAR(191) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

@@ -1,5 +1,5 @@
-import { Prisma } from "@prisma/client";
-import { IsBoolean, IsEmail, IsNotEmpty, IsPhoneNumber, IsString, Length } from "class-validator";
+import { Prisma, Status } from "@prisma/client";
+import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString, Length } from "class-validator";
 
 export class pemeriksaanAPHModel implements Prisma.pemeriksaanAPHCreateInput {
 
@@ -51,12 +51,12 @@ export class pemeriksaanAPHModel implements Prisma.pemeriksaanAPHCreateInput {
   surat_permohonan: string;
   @IsNotEmpty()
   bukti_permohonan: string;
-  @IsBoolean()
-  @IsNotEmpty()
-  status: string;
+  status: Status;
   recInsert: Date;
   recUpdate: Date;
   isVerified: boolean;
   dateVerified: Date;
   CatatanTolak: string
 }
+
+
