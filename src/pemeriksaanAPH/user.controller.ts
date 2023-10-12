@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Response} from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Response, ValidationPipe } from "@nestjs/common";
 import { APHService } from "./user.service";
 import { pemeriksaanAPHModel } from "./user.model";
 
@@ -20,7 +20,7 @@ export class APHController {
   }
 
   @Post()
-  async createAPH(@Body() postdata: pemeriksaanAPHModel, @Response() res): Promise<pemeriksaanAPHModel> {
+  async createAPH(@Body(ValidationPipe) postdata: pemeriksaanAPHModel, @Response() res): Promise<pemeriksaanAPHModel> {
    const data = await this.APHService.createAPH(postdata);
     return res.status(201).json({
       message: "Data berhasil ditambahkan",

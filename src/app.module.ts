@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AphModule } from "./user/user.module";
+import { AphModule } from "./pemeriksaanAPH/user.module";
 
 @Module({
   imports: [AphModule],
