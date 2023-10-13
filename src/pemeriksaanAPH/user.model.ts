@@ -1,5 +1,5 @@
 import { Prisma, Status } from "@prisma/client";
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString, Length } from "class-validator";
+import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString, Length, IsEnum } from "class-validator";
 
 export class pemeriksaanAPHModel implements Prisma.pemeriksaanAPHCreateInput {
 

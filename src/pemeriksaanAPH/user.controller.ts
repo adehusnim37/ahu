@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Response, ValidationPipe } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  Response,
+  ValidationPipe
+} from "@nestjs/common";
 import { APHService } from "./user.service";
 import { pemeriksaanAPHModel } from "./user.model";
 
@@ -9,23 +21,41 @@ export class APHController {
   }
 
   @Get()
-  async getAllAPH(@Response() res): Promise<pemeriksaanAPHModel[]> {
+  async getAllAPH(
+    @Query('pageIndex') pageIndex: number,
+    @Query('pageSize')pageSize: number,
+    @Query('stringPencarian') stringPencarian: string,
+    @Query('sortBy') sortBy: string,
+    @Query('isSortAscending') isSortAscending: boolean,
+    @Response() res,
+  ): Promise<any> {
     try {
-      const APH = await this.APHService.getAllAPH();
+      const APH = await this.APHService.getAllAPH(
+        pageIndex,
+        pageSize,
+        stringPencarian,
+        sortBy,
+        isSortAscending
+      );
+      if(APH.length == 0){
+        return res.status(200).json({
+          message: "Data tidak ditemukan / kosong",
+        });
+      }
       return res.status(200).json({
         count: APH.length,
         message: "Data berhasil diambil",
-        data: APH
-
+        data: APH,
       });
     } catch (err) {
       return res.status(500).json({
         message: "Data tidak dapat diambil",
-        data: err.message
+        data: err.message,
       });
     }
-
   }
+
+
 
   @Post()
   async createAPH(@Body(ValidationPipe) postdata: pemeriksaanAPHModel, @Response() res): Promise<pemeriksaanAPHModel> {
@@ -62,20 +92,28 @@ export class APHController {
   //check if the status is Diterima cannot be updated
   @Patch(":id")
   async updateAPH(@Param("id") id: string, @Body() postdata: pemeriksaanAPHModel, @Response() res): Promise<pemeriksaanAPHModel> {
-    const aphData = await this.APHService.getById(id);
-    // Check if the status is 'Diterima', if yes, return a 400 Bad Request response
-    if (aphData.isVerified == true) {
-      return res.status(400).json({
-        message: "Data tidak dapat diupdate karena sudah diverifikasi"
+    try {
+      const aphData = await this.APHService.getById(id);
+      // Check if the status is 'Diterima', if yes, return a 400 Bad Request response
+      if (aphData.isVerified == true) {
+        return res.status(400).json({
+          message: "Data tidak dapat diupdate karena sudah diverifikasi"
+        });
+      }
+      const update = await this.APHService.updateAPH(id, postdata);
+      //if aph data status is updated from here then the status is still menunggu
+
+      return res.status(201).json({
+        message: "Data berhasil diupdate",
+        data: update
+      });
+    }catch (err){
+      return res.status(500).json({
+        message: "Data tidak dapat diupdate",
+        data: err.message
       });
     }
-    const update = await this.APHService.updateAPH(id, postdata);
-    //if aph data status is updated from here then the status is still menunggu
 
-    return res.status(201).json({
-      message: "Data berhasil diupdate",
-      data: update
-    });
   }
 
   @Delete(":id")

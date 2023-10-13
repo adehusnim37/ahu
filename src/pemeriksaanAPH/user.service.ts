@@ -1,14 +1,42 @@
 import { PrismaService } from "./prisma.service";
 import { pemeriksaanAPHModel } from "./user.model";
 import { Injectable } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class APHService {
   constructor(private prisma: PrismaService) {
   }
 
-  async getAllAPH(): Promise<pemeriksaanAPHModel[]> {
-    return this.prisma.pemeriksaanAPH.findMany();
+  async getAllAPH(
+    pageIndex?: number, // optional
+    pageSize?: number, // optional
+    stringPencarian?: string, // optional
+    sortBy?: string, // optional
+    isSortAscending?: boolean // optional
+  ): Promise<pemeriksaanAPHModel[]> {
+    const query: Prisma.pemeriksaanAPHFindManyArgs = {
+      where: {
+        OR: stringPencarian
+          ? [
+            { namaPemohon: { contains: stringPencarian } },
+            { nama_notaris: { contains: stringPencarian } },
+            // if the recInsert is included in the search string, then convert the string to Date object then search
+            { recInsert: { equals: isNaN(Date.parse(stringPencarian)) ? undefined : new Date(stringPencarian) } }, // jika stringPencarian gabisa di convert ke tanggal maka undefined, jika bisa maka convert ke tanggal lalu cari
+          ]
+          : undefined,
+      },
+      orderBy: sortBy
+        ? {
+          [sortBy]: isSortAscending ? 'asc' : 'desc',
+        }
+        : undefined,
+      skip: pageIndex && pageSize ? (pageIndex - 1) * pageSize : undefined, // skip berlaku jika pageIndex dan pageSize ada
+      take: pageSize ? parseInt(pageSize.toString(), 10) : undefined, // Take is only available when pageSize is defined
+    };
+
+    // Use Prisma Client to fetch the data based on the query
+    return this.prisma.pemeriksaanAPH.findMany(query);
   }
 
   async createAPH(data: pemeriksaanAPHModel): Promise<pemeriksaanAPHModel> {
@@ -20,9 +48,9 @@ export class APHService {
   async updateAPH(id: string, data: pemeriksaanAPHModel): Promise<pemeriksaanAPHModel> {
     return this.prisma.pemeriksaanAPH.update({
       where: { id: id },
-      data : {
+      data: {
         ...data,
-        recUpdate: new Date(),
+        recUpdate: new Date()
       }
     });
   }
@@ -44,9 +72,9 @@ export class APHService {
       where: { id: id },
       data: {
         ...data,
-        status: 'Diproses',
+        status: "Diproses",
         isVerified: true,
-        dateVerified: new Date(),
+        dateVerified: new Date()
       }
     });
   }
