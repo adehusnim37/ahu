@@ -1,0 +1,3 @@
+class UploadfileDto{
+  file: any;
+}

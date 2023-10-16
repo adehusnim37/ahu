@@ -4,30 +4,38 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
-  Patch,
   Post,
+  Put,
   Query,
   Response,
+  UploadedFiles, UseInterceptors,
   ValidationPipe
 } from "@nestjs/common";
 import { APHService } from "./user.service";
 import { pemeriksaanAPHModel } from "./user.model";
+import { CreateUpdateAphDto } from "../dto/create.dto";
+import { MinioService } from "../minio/minio.service";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
+
+
 
 @Controller("api/v1/aph")
 export class APHController {
 
-  constructor(private readonly APHService: APHService) {
-  }
+  constructor(
+    private readonly APHService: APHService,
+    private readonly minioService: MinioService
+  ) {}
+
 
   @Get()
   async getAllAPH(
-    @Query('pageIndex') pageIndex: number,
-    @Query('pageSize')pageSize: number,
-    @Query('stringPencarian') stringPencarian: string,
-    @Query('sortBy') sortBy: string,
-    @Query('isSortAscending') isSortAscending: boolean,
-    @Response() res,
+    @Query("pageIndex") pageIndex: number,
+    @Query("pageSize") pageSize: number,
+    @Query("stringPencarian") stringPencarian: string,
+    @Query("sortBy") sortBy: string,
+    @Query("isSortAscending") isSortAscending: boolean,
+    @Response() res
   ): Promise<any> {
     try {
       const APH = await this.APHService.getAllAPH(
@@ -37,29 +45,45 @@ export class APHController {
         sortBy,
         isSortAscending
       );
-      if(APH.length == 0){
+      if (APH.length == 0) {
         return res.status(200).json({
-          message: "Data tidak ditemukan / kosong",
+          message: "Data tidak ditemukan / kosong"
         });
       }
       return res.status(200).json({
         count: APH.length,
         message: "Data berhasil diambil",
-        data: APH,
+        data: APH
       });
     } catch (err) {
       return res.status(500).json({
         message: "Data tidak dapat diambil",
-        data: err.message,
+        data: err.message
+      });
+    }
+  }
+
+  @Get(":id")
+  async getAPHById(@Param("id") id: string, @Response() res): Promise<pemeriksaanAPHModel> {
+    try {
+      const APH = await this.APHService.getById(id);
+      return res.status(200).json({
+        message: "Data berhasil diambil",
+        data: APH
+      });
+    } catch (err) {
+      return res.status(500).json({
+        message: "Data tidak dapat diambil",
+        data: err.message
       });
     }
   }
 
 
-
   @Post()
-  async createAPH(@Body(ValidationPipe) postdata: pemeriksaanAPHModel, @Response() res): Promise<pemeriksaanAPHModel> {
+  async createAPH(@Body(ValidationPipe) postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
     try {
+
       const data = await this.APHService.createAPH(postdata);
       return res.status(201).json({
         message: "Data berhasil ditambahkan",
@@ -74,7 +98,7 @@ export class APHController {
   }
 
   @Post("/submit/:id")
-  async submitAPH(@Param("id") id: string, @Body() postdata: pemeriksaanAPHModel, @Response() res ): Promise<pemeriksaanAPHModel> {
+  async submitAPH(@Param("id") id: string, @Body() postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
     try {
       const data = await this.APHService.SubmitAPH(id, postdata);
       return res.status(201).json({
@@ -90,8 +114,8 @@ export class APHController {
   }
 
   //check if the status is Diterima cannot be updated
-  @Patch(":id")
-  async updateAPH(@Param("id") id: string, @Body() postdata: pemeriksaanAPHModel, @Response() res): Promise<pemeriksaanAPHModel> {
+  @Put(":id")
+  async updateAPH(@Param("id") id: string, @Body() postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
     try {
       const aphData = await this.APHService.getById(id);
       // Check if the status is 'Diterima', if yes, return a 400 Bad Request response
@@ -107,7 +131,7 @@ export class APHController {
         message: "Data berhasil diupdate",
         data: update
       });
-    }catch (err){
+    } catch (err) {
       return res.status(500).json({
         message: "Data tidak dapat diupdate",
         data: err.message
@@ -139,5 +163,6 @@ export class APHController {
       });
     }
   }
+
 
 }
