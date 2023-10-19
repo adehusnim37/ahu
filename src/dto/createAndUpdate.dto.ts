@@ -1,9 +1,9 @@
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString, Length, IsDate, IsEnum, IsOptional } from "class-validator";
+import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString, Length, IsEnum, IsOptional, IsBoolean } from "class-validator";
 import {Status} from "@prisma/client";
 
 export class CreateUpdateAphDto {
 
-  @IsNotEmpty()
+  @IsOptional()
   userId: string;
 
   @IsNotEmpty()
@@ -75,5 +75,8 @@ export class CreateUpdateAphDto {
   @IsOptional()
   @IsEnum(Status)
   status?: Status;
+
+  @IsOptional()
+  isVerified?: boolean;
 
 }

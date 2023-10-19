@@ -8,6 +8,7 @@ export class pemeriksaanAPHModel implements Prisma.pemeriksaanAPHCreateInput {
   NRP_File: string;
   noTelp: string;
   email: string;
+  notaris_id?: string;
   nama_notaris: string;
   kedudukan_notaris: string;
   alamat_notaris: string;
@@ -28,6 +29,7 @@ export class pemeriksaanAPHModel implements Prisma.pemeriksaanAPHCreateInput {
   isVerified?: boolean;
   dateVerified?: Date;
   CatatanTolak?: string
+  isSubmit?: boolean;
 }
 
 

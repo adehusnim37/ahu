@@ -7,6 +7,7 @@ CREATE TABLE `pemeriksaanAPH` (
     `NRP_File` VARCHAR(191) NOT NULL,
     `noTelp` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
+    `notaris_id` VARCHAR(191) NULL,
     `nama_notaris` VARCHAR(191) NOT NULL,
     `kedudukan_notaris` VARCHAR(191) NOT NULL,
     `alamat_notaris` VARCHAR(191) NOT NULL,
@@ -21,12 +22,15 @@ CREATE TABLE `pemeriksaanAPH` (
     `tgl_surat_kuasa` DATETIME(3) NOT NULL,
     `surat_permohonan` VARCHAR(191) NOT NULL,
     `bukti_permohonan` VARCHAR(191) NOT NULL,
-    `status` ENUM('Menunggu', 'Diterima', 'Ditolak') NOT NULL DEFAULT 'Menunggu',
+    `status` ENUM('draft', 'menungguVerifikasi', 'diterima') NOT NULL DEFAULT 'draft',
     `recInsert` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `recUpdate` DATETIME(3) NULL,
     `isVerified` BOOLEAN NOT NULL DEFAULT false,
     `dateVerified` DATETIME(3) NULL,
     `CatatanTolak` VARCHAR(191) NULL,
+    `isSubmit` BOOLEAN NOT NULL DEFAULT false,
 
+    UNIQUE INDEX `pemeriksaanAPH_notaris_id_key`(`notaris_id`),
+    UNIQUE INDEX `pemeriksaanAPH_nosurat_key`(`nosurat`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

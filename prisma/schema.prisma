@@ -18,6 +18,7 @@ model pemeriksaanAPH {
   NRP_File             String
   noTelp               String
   email                String
+  notaris_id           String?   @unique @default(uuid())
   nama_notaris         String
   kedudukan_notaris    String
   alamat_notaris       String
@@ -28,21 +29,21 @@ model pemeriksaanAPH {
   unit_instansi        String
   jabatan_instansi     String
   alamat_instansi      String
-  nosurat              String
+  nosurat              String    @unique
   tgl_surat_kuasa      DateTime
   surat_permohonan     String
   bukti_permohonan     String
-  status               Status    @default(Menunggu)
+  status               Status    @default(draft)
   recInsert            DateTime  @default(now())
-  recUpdate            DateTime?
+  recUpdate            DateTime?43
   isVerified           Boolean   @default(false)
   dateVerified         DateTime?
   CatatanTolak         String?
+  isSubmit             Boolean   @default(false)
 }
 
 enum Status {
-  Menunggu
-  Diterima
-  Ditolak
-  Diproses
+  draft
+  menungguVerifikasi
+  diterima
 }

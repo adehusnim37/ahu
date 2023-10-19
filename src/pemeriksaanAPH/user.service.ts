@@ -1,5 +1,5 @@
 import { PrismaService } from "./prisma.service";
-import { pemeriksaanAPHModel } from "./user.model";
+import { pemeriksaanAPHModel } from "../model/user.model";
 import { Injectable } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 
@@ -73,7 +73,7 @@ export class APHService {
       where: { id: id },
       data: {
         ...data,
-        status: "Diproses",
+        status: "menungguVerifikasi",
         isVerified: true,
         dateVerified: new Date()
       }
