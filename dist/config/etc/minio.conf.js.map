@@ -1,0 +1,1 @@
+{"version":3,"file":"minio.conf.js","sourceRoot":"","sources":["../../../src/config/etc/minio.conf.ts"],"names":[],"mappings":";;;AAEa,QAAA,MAAM,GAAG;IACpB,cAAc,EAAE,OAAO,CAAC,GAAG,CAAC,cAAc,IAAI,WAAW;IACzD,UAAU,EAAE,IAAI;IAChB,eAAe,EAAE,OAAO,CAAC,GAAG,CAAC,gBAAgB;IAC7C,eAAe,EAAE,OAAO,CAAC,GAAG,CAAC,gBAAgB;IAC7C,YAAY,EAAE,OAAO,CAAC,GAAG,CAAC,YAAY;CACvC,CAAC"}
