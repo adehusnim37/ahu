@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { APHController } from "./user.controller";
-import { APHService } from "./user.service";
+import { APHController } from "./example.controller";
+import { APHService } from "./example.service";
 import {PrismaService} from "./prisma.service";
 
 

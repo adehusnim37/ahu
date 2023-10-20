@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { MimeTypeState } from '../config/enum/mime-type.enum';
+import { MimeTypeState } from '../../config/enum/mime-type.enum';
 export interface BufferedFile {
     fieldname: string;
     originalname: string;

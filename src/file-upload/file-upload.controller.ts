@@ -10,7 +10,7 @@ import {
   FileFieldsInterceptor,
 } from '@nestjs/platform-express';
 import { FileUploadService } from './file-upload.service';
-import { BufferedFile } from '../model/file-model';
+import { BufferedFile } from '../model/external/file-model';
 
 @Controller('api/upload')
 export class FileUploadController {

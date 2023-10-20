@@ -1,5 +1,5 @@
 import { MinioService } from 'nestjs-minio-client';
-import { BufferedFile } from '../model/file-model';
+import { BufferedFile } from '../model/external/file-model';
 export declare class MinioClientService {
     private readonly minio;
     private readonly logger;

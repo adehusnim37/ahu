@@ -1,5 +1,5 @@
 import { APHService } from './user.service';
-import { pemeriksaanAPHModel } from '../model/user.model';
+import { pemeriksaanAPHModel } from "../model/example/user.model";
 import { CreateUpdateAphDto } from '../dto/createAndUpdate.dto';
 export declare class APHController {
     private readonly APHService;

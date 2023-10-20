@@ -8,7 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
-const user_module_1 = require("./pemeriksaanAPH/user.module");
+const example_module_1 = require("./controller/example/example.module");
 const file_upload_module_1 = require("./file-upload/file-upload.module");
 const minio_client_module_1 = require("./minio-client/minio-client.module");
 let AppModule = class AppModule {
@@ -16,7 +16,7 @@ let AppModule = class AppModule {
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [user_module_1.AphModule, file_upload_module_1.FileUploadModule, minio_client_module_1.MinioClientModule],
+        imports: [example_module_1.AphModule, file_upload_module_1.FileUploadModule, minio_client_module_1.MinioClientModule],
         controllers: [],
         providers: [],
     })

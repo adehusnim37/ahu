@@ -1,5 +1,5 @@
 import { FileUploadService } from './file-upload.service';
-import { BufferedFile } from '../model/file-model';
+import { BufferedFile } from '../model/external/file-model';
 export declare class FileUploadController {
     private fileUploadService;
     constructor(fileUploadService: FileUploadService);

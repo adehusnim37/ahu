@@ -1,5 +1,5 @@
 import { MinioClientService } from 'src/minio-client/minio-client.service';
-import { BufferedFile } from '../model/file-model';
+import { BufferedFile } from '../model/external/file-model';
 export declare class FileUploadService {
     private minioClientService;
     constructor(minioClientService: MinioClientService);

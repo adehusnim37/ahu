@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MinioClientService } from 'src/minio-client/minio-client.service';
-import { BufferedFile } from '../model/file-model';
+import { BufferedFile } from '../model/external/file-model';
 
 @Injectable()
 export class FileUploadService {

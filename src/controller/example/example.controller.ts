@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Response, ValidationPipe } from '@nestjs/common';
-import { APHService } from './user.service';
-import { pemeriksaanAPHModel } from '../model/user.model';
-import { CreateUpdateAphDto } from '../dto/createAndUpdate.dto';
+import { APHService } from './example.service';
+import { pemeriksaanAPHModel } from "../../model/example/user.model";
+import { CreateUpdateAphDto } from '../../dto/example/createAndUpdate.dto';
 
 
-@Controller('api/v1/aph')
+@Controller('api/v1/example')
 export class APHController {
 
   constructor(
@@ -14,7 +14,7 @@ export class APHController {
 
 
   @Get()
-  async getAllAPH(
+  async getAll(
     @Query('pageIndex') pageIndex: number,
     @Query('pageSize') pageSize: number,
     @Query('stringPencarian') stringPencarian: string,
@@ -49,7 +49,7 @@ export class APHController {
   }
 
   @Get(':id')
-  async getAPHById(@Param('id') id: string, @Response() res): Promise<pemeriksaanAPHModel> {
+  async getById(@Param('id') id: string, @Response() res): Promise<pemeriksaanAPHModel> {
     try {
       const APH = await this.APHService.getById(id);
       return res.status(200).json({
@@ -66,7 +66,7 @@ export class APHController {
 
 
   @Post()
-  async createAPH(@Body(ValidationPipe) postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
+  async create(@Body(ValidationPipe) postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
     try {
 
       const data = await this.APHService.createAPH(postdata);
@@ -84,7 +84,7 @@ export class APHController {
 
 
   @Post('/submit/:id')
-  async submitAPH(@Param('id') id: string, @Body() postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
+  async submit(@Param('id') id: string, @Body() postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
     try {
       const data = await this.APHService.SubmitAPH(id, postdata);
       return res.status(201).json({
@@ -101,7 +101,7 @@ export class APHController {
 
   //check if the status is Diterima cannot be updated
   @Put(':id')
-  async updateAPH(@Param('id') id: string, @Body() postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
+  async update(@Param('id') id: string, @Body() postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
     try {
       const aphData = await this.APHService.getById(id);
       // Check if the status is 'Diterima', if yes, return a 400 Bad Request response
@@ -111,7 +111,7 @@ export class APHController {
         });
       }
       const update = await this.APHService.updateAPH(id, postdata);
-      //if aph data status is updated from here then the status is still menunggu
+      //if example data status is updated from here then the status is still menunggu
 
       return res.status(201).json({
         message: 'Data berhasil diupdate',
@@ -127,7 +127,7 @@ export class APHController {
   }
 
   @Delete(':id')
-  async deleteAPH(@Param('id') id: string, @Response() res): Promise<pemeriksaanAPHModel> {
+  async delete(@Param('id') id: string, @Response() res): Promise<pemeriksaanAPHModel> {
     try {
       const aphData = await this.APHService.getById(id);
       // Check if the status is 'Diterima', if yes, return a 400 Bad Request response

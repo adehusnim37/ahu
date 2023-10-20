@@ -184,7 +184,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "deleteAPH", null);
 exports.APHController = APHController = __decorate([
-    (0, common_1.Controller)('api/v1/aph'),
+    (0, common_1.Controller)('api/v1/example'),
     __metadata("design:paramtypes", [user_service_1.APHService])
 ], APHController);
 //# sourceMappingURL=user.controller.js.map

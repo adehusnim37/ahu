@@ -1,5 +1,5 @@
 import { PrismaService } from "./prisma.service";
-import { pemeriksaanAPHModel } from "../model/user.model";
+import { pemeriksaanAPHModel } from "../model/example/user.model";
 export declare class APHService {
     private prisma;
     constructor(prisma: PrismaService);

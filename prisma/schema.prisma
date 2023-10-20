@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model pemeriksaanAPH {
+model ExampleModel {
   id                   String    @id @default(uuid())
   userId               String
   namaPemohon          String
@@ -35,7 +35,7 @@ model pemeriksaanAPH {
   bukti_permohonan     String
   status               Status    @default(draft)
   recInsert            DateTime  @default(now())
-  recUpdate            DateTime?43
+  recUpdate            DateTime?
   isVerified           Boolean   @default(false)
   dateVerified         DateTime?
   CatatanTolak         String?
