@@ -6,19 +6,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppModule = void 0;
+exports.AphModule = void 0;
 const common_1 = require("@nestjs/common");
-const aph_module_1 = require("./controller/aph/aph.module");
-const file_upload_module_1 = require("./file-upload/file-upload.module");
-const minio_client_module_1 = require("./minio-client/minio-client.module");
-let AppModule = class AppModule {
+const aph_controller_1 = require("./aph.controller");
+const aph_service_1 = require("./aph.service");
+const prisma_service_1 = require("./prisma.service");
+let AphModule = class AphModule {
 };
-exports.AppModule = AppModule;
-exports.AppModule = AppModule = __decorate([
+exports.AphModule = AphModule;
+exports.AphModule = AphModule = __decorate([
     (0, common_1.Module)({
-        imports: [aph_module_1.AphModule, file_upload_module_1.FileUploadModule, minio_client_module_1.MinioClientModule],
-        controllers: [],
-        providers: [],
+        controllers: [aph_controller_1.APHController],
+        providers: [aph_service_1.APHService, prisma_service_1.PrismaService],
     })
-], AppModule);
-//# sourceMappingURL=app.module.js.map
+], AphModule);
+//# sourceMappingURL=aph.module.js.map
