@@ -74,6 +74,11 @@ let APHController = class APHController {
     async submit(id, postdata, res) {
         try {
             const data = await this.APHService.SubmitAPH(id, postdata);
+            if (data.isSubmit == true) {
+                return res.status(400).json({
+                    message: 'Data tidak dapat diupdate karena sudah diverifikasi',
+                });
+            }
             return res.status(201).json({
                 message: 'Data berhasil diverifikasi',
                 data: data,

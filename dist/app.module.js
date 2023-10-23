@@ -11,12 +11,13 @@ const common_1 = require("@nestjs/common");
 const aph_module_1 = require("./controller/aph/aph.module");
 const file_upload_module_1 = require("./file-upload/file-upload.module");
 const minio_client_module_1 = require("./minio-client/minio-client.module");
+const rate_limiter_module_1 = require("./config/rate-limit/rate-limiter.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [aph_module_1.AphModule, file_upload_module_1.FileUploadModule, minio_client_module_1.MinioClientModule],
+        imports: [aph_module_1.AphModule, file_upload_module_1.FileUploadModule, minio_client_module_1.MinioClientModule, rate_limiter_module_1.RateLimiterModule],
         controllers: [],
         providers: [],
     })

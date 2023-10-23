@@ -87,6 +87,11 @@ export class APHController {
   async submit(@Param('id') id: string, @Body() postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
     try {
       const data = await this.APHService.SubmitAPH(id, postdata);
+      if(data.isSubmit == true){
+        return res.status(400).json({
+          message: 'Data tidak dapat diupdate karena sudah diverifikasi',
+        });
+      }
       return res.status(201).json({
         message: 'Data berhasil diverifikasi',
         data: data,
