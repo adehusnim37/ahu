@@ -24,7 +24,7 @@ export class RateLimiterService {
                 await this.consume(req.ip);
                 next();
             } catch (err) {
-                res.status(429).send('Too Many Requests for this IP, please try again later.');
+                res.status(429).send('Terlalu banyak request untuk saat ini, silahkan coba lagi nanti');
             }
         };
     }

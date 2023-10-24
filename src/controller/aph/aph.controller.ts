@@ -1,12 +1,12 @@
 import {
-    Body, ConflictException,
+    Body,
     Controller,
     Delete,
     Get,
     Param,
     Post,
     Put,
-    Query, Req,
+    Query,
     Response,
     UseGuards,
     ValidationPipe
@@ -16,7 +16,7 @@ import {pemeriksaanAPHModel} from "../../model/aph/aph.model";
 import {CreateUpdateAphDto} from '../../dto/aph/createAndUpdate.dto';
 import {AuthGuard} from "../../auth/jwt-auth.guard";
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @Controller('api/v1/aph')
 export class APHController {
 
@@ -72,6 +72,11 @@ export class APHController {
     async getById(@Param('id') id: string, @Response() res): Promise<pemeriksaanAPHModel> {
         try {
             const APH = await this.APHService.getById(id);
+            if (!APH) {
+                return res.status(404).json({
+                    message: 'Data tidak ditemukan',
+                });
+            }
             return res.status(200).json({
                 message: 'Data berhasil diambil',
                 data: APH,
@@ -161,10 +166,9 @@ export class APHController {
                 });
             }
 
-            const deleteData = await this.APHService.deleteAPH(id);
-            return res.status(200).json({
+            await this.APHService.deleteAPH(id);
+            return res.status(204).json({
                 message: 'Data berhasil dihapus',
-                data: deleteData,
             });
         } catch (error) {
             // Handle error appropriately (e.g., record not found)

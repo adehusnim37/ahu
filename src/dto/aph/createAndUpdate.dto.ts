@@ -1,4 +1,12 @@
-import {IsEmail, IsNotEmpty, IsPhoneNumber, IsString, Length, IsEnum, IsOptional,} from "class-validator";
+import {
+    IsEmail,
+    IsNotEmpty,
+    IsPhoneNumber,
+    IsString,
+    Length,
+    IsEnum,
+    IsOptional, NotContains, MaxDate,
+} from "class-validator";
 import {Status} from "@prisma/client";
 
 export class CreateUpdateAphDto {
@@ -46,8 +54,7 @@ export class CreateUpdateAphDto {
     no_akta_notaris: string;
 
     @IsOptional()
-    @IsString()
-    //check if the date is not 4equal today
+    @MaxDate(new Date())
     tanggal_akta_notaris: Date;
 
     @IsOptional()
@@ -70,9 +77,11 @@ export class CreateUpdateAphDto {
 
     @IsNotEmpty()
     @IsString()
+    @NotContains(' ', {message: 'No Surat tidak boleh mengandung spasi'})
     nosurat: string;
 
     @IsNotEmpty()
+    @MaxDate(new Date())
     tgl_surat_kuasa: Date;
 
     @IsNotEmpty()

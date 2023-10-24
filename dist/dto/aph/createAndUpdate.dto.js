@@ -69,7 +69,7 @@ __decorate([
 ], CreateUpdateAphDto.prototype, "no_akta_notaris", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxDate)(new Date()),
     __metadata("design:type", Date)
 ], CreateUpdateAphDto.prototype, "tanggal_akta_notaris", void 0);
 __decorate([
@@ -98,10 +98,12 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.NotContains)(' ', { message: 'No Surat tidak boleh mengandung spasi' }),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "nosurat", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.MaxDate)(new Date()),
     __metadata("design:type", Date)
 ], CreateUpdateAphDto.prototype, "tgl_surat_kuasa", void 0);
 __decorate([

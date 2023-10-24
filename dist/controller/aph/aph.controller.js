@@ -16,7 +16,6 @@ exports.APHController = void 0;
 const common_1 = require("@nestjs/common");
 const aph_service_1 = require("./aph.service");
 const createAndUpdate_dto_1 = require("../../dto/aph/createAndUpdate.dto");
-const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
 let APHController = class APHController {
     constructor(APHService) {
         this.APHService = APHService;
@@ -53,6 +52,11 @@ let APHController = class APHController {
     async getById(id, res) {
         try {
             const APH = await this.APHService.getById(id);
+            if (!APH) {
+                return res.status(404).json({
+                    message: 'Data tidak ditemukan',
+                });
+            }
             return res.status(200).json({
                 message: 'Data berhasil diambil',
                 data: APH,
@@ -129,10 +133,9 @@ let APHController = class APHController {
                     message: 'Data tidak dapat dihapus karena sudah diterima',
                 });
             }
-            const deleteData = await this.APHService.deleteAPH(id);
-            return res.status(200).json({
+            await this.APHService.deleteAPH(id);
+            return res.status(204).json({
                 message: 'Data berhasil dihapus',
-                data: deleteData,
             });
         }
         catch (error) {
@@ -198,7 +201,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "delete", null);
 exports.APHController = APHController = __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.AuthGuard),
     (0, common_1.Controller)('api/v1/aph'),
     __metadata("design:paramtypes", [aph_service_1.APHService])
 ], APHController);
