@@ -22,7 +22,7 @@ let RateLimiterService = class RateLimiterService {
     async consume(ip) {
         return this.rateLimiter.consume(ip);
     }
-    middleware() {
+    ratelimit() {
         return async (req, res, next) => {
             try {
                 await this.consume(req.ip);

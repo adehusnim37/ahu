@@ -20,7 +20,7 @@ __decorate([
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "userId", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.Length)(5, 100),
     __metadata("design:type", String)
@@ -37,6 +37,7 @@ __decorate([
 ], CreateUpdateAphDto.prototype, "NRP_File", void 0);
 __decorate([
     (0, class_validator_1.IsPhoneNumber)('ID'),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "noTelp", void 0);
 __decorate([
@@ -47,27 +48,33 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.Length)(5, 100),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "nama_notaris", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "kedudukan_notaris", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
     (0, class_validator_1.Length)(20, 100),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "alamat_notaris", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "no_akta_notaris", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", Date)
 ], CreateUpdateAphDto.prototype, "tanggal_akta_notaris", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "isi_akta", void 0);
 __decorate([
@@ -90,6 +97,7 @@ __decorate([
 ], CreateUpdateAphDto.prototype, "alamat_instansi", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "nosurat", void 0);
 __decorate([

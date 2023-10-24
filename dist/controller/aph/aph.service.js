@@ -38,6 +38,12 @@ let APHService = class APHService {
         return this.prisma.pemeriksaanAPH.findMany(query);
     }
     async createAPH(data) {
+        const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
+            where: { nosurat: data.nosurat },
+        });
+        if (existingRecord) {
+            throw new common_1.ConflictException('Nosurat already exists!');
+        }
         return this.prisma.pemeriksaanAPH.create({
             data
         });

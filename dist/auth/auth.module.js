@@ -6,21 +6,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppModule = void 0;
+exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
-const aph_module_1 = require("./controller/aph/aph.module");
-const file_upload_module_1 = require("./file-upload/file-upload.module");
-const minio_client_module_1 = require("./minio-client/minio-client.module");
-const rate_limiter_module_1 = require("./rate-limit/rate-limiter.module");
-const auth_module_1 = require("./auth/auth.module");
-let AppModule = class AppModule {
+const jwt_1 = require("@nestjs/jwt");
+const constant_1 = require("../config/jwt/constant");
+let AuthModule = class AuthModule {
 };
-exports.AppModule = AppModule;
-exports.AppModule = AppModule = __decorate([
+exports.AuthModule = AuthModule;
+exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [aph_module_1.AphModule, file_upload_module_1.FileUploadModule, minio_client_module_1.MinioClientModule, rate_limiter_module_1.RateLimiterModule, auth_module_1.AuthModule],
-        controllers: [],
+        imports: [
+            jwt_1.JwtModule.register({
+                global: true,
+                secret: constant_1.jwtConstants.secret,
+                signOptions: { expiresIn: '10m' },
+            }),
+        ],
         providers: [],
+        controllers: [],
+        exports: [],
     })
-], AppModule);
-//# sourceMappingURL=app.module.js.map
+], AuthModule);
+//# sourceMappingURL=auth.module.js.map

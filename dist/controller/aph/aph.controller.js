@@ -16,6 +16,7 @@ exports.APHController = void 0;
 const common_1 = require("@nestjs/common");
 const aph_service_1 = require("./aph.service");
 const createAndUpdate_dto_1 = require("../../dto/aph/createAndUpdate.dto");
+const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
 let APHController = class APHController {
     constructor(APHService) {
         this.APHService = APHService;
@@ -23,15 +24,23 @@ let APHController = class APHController {
     async getAll(pageIndex, pageSize, stringPencarian, sortBy, isSortAscending, res) {
         try {
             const APH = await this.APHService.getAllAPH(pageIndex, pageSize, stringPencarian, sortBy, isSortAscending);
+            console.log("After fetching data:", APH);
             if (APH.length == 0) {
                 return res.status(200).json({
                     message: 'Data tidak ditemukan / kosong',
                 });
             }
-            return res.status(200).json({
+            const page = {
                 count: APH.length,
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                isFirstPage: pageIndex == 1 ? true : false,
+                isLastPage: APH.length < pageSize ? true : false,
+            };
+            return res.status(200).json({
                 message: 'Data berhasil diambil',
                 data: APH,
+                page: page,
             });
         }
         catch (err) {
@@ -189,6 +198,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "delete", null);
 exports.APHController = APHController = __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.AuthGuard),
     (0, common_1.Controller)('api/v1/aph'),
     __metadata("design:paramtypes", [aph_service_1.APHService])
 ], APHController);

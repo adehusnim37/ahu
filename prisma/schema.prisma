@@ -13,17 +13,17 @@ datasource db {
 model pemeriksaanAPH {
   id                   String    @id @default(uuid())
   userId               String
-  namaPemohon          String
+  namaPemohon          String?
   NRP                  String
   NRP_File             String
   noTelp               String
   email                String
   notaris_id           String?   @unique @default(uuid())
-  nama_notaris         String
-  kedudukan_notaris    String
-  alamat_notaris       String
-  no_akta_notaris      String
-  tanggal_akta_notaris DateTime
+  nama_notaris         String?
+  kedudukan_notaris    String?
+  alamat_notaris       String?
+  no_akta_notaris      String?
+  tanggal_akta_notaris DateTime?
   isi_akta             String
   nama_instansi        String
   unit_instansi        String

@@ -18,7 +18,7 @@ let RateLimiterModule = class RateLimiterModule {
     }
     configure(consumer) {
         consumer
-            .apply(this.rateLimiterService.middleware())
+            .apply(this.rateLimiterService.ratelimit())
             .forRoutes({ path: '*', method: common_1.RequestMethod.ALL });
     }
 };

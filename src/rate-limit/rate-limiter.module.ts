@@ -8,9 +8,9 @@ import { RateLimiterService } from './rate-limiter.service';
 export class RateLimiterModule {
     constructor(private rateLimiterService: RateLimiterService) {}
 
-    configure(consumer: MiddlewareConsumer) {
+    configure(consumer: MiddlewareConsumer) { // 👈 new method to configure
         consumer
-            .apply(this.rateLimiterService.middleware())
+            .apply(this.rateLimiterService.ratelimit())
             .forRoutes({ path: '*', method: RequestMethod.ALL });
     }
 }

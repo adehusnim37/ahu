@@ -18,7 +18,7 @@ export class RateLimiterService {
         return this.rateLimiter.consume(ip);
     }
 
-    public middleware() {
+    public ratelimit() {
         return async (req: Request, res: Response, next: NextFunction) => {
             try {
                 await this.consume(req.ip);

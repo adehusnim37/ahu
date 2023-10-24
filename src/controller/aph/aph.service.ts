@@ -1,6 +1,6 @@
 import { PrismaService } from "./prisma.service";
 import { pemeriksaanAPHModel } from "../../model/aph/aph.model";
-import { Injectable } from "@nestjs/common";
+import {ConflictException, Injectable} from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 
 
@@ -41,6 +41,13 @@ export class APHService {
   }
 
   async createAPH(data: pemeriksaanAPHModel): Promise<pemeriksaanAPHModel> {
+    const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
+      where: { nosurat: data.nosurat },
+    });
+
+    if (existingRecord) {
+      throw new ConflictException('Nosurat already exists!');
+    }
     return this.prisma.pemeriksaanAPH.create({
       data
     });
