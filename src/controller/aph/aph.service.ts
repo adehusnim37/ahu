@@ -46,7 +46,7 @@ export class APHService {
     });
 
     if (existingRecord) {
-      throw new ConflictException('Nosurat already exists!');
+      throw new ConflictException('No surat sudah ada!');
     }
     return this.prisma.pemeriksaanAPH.create({
       data
@@ -54,6 +54,13 @@ export class APHService {
   }
 
   async updateAPH(id: string, data: pemeriksaanAPHModel): Promise<pemeriksaanAPHModel> {
+    const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
+      where: { nosurat: data.nosurat },
+    });
+
+    if (existingRecord) {
+      throw new ConflictException('No surat sudah ada!');
+    }
     return this.prisma.pemeriksaanAPH.update({
       where: { id: id },
       data: {

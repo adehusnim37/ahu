@@ -5,93 +5,93 @@ import {
     IsString,
     Length,
     IsEnum,
-    IsOptional, NotContains, MaxDate,
+    IsOptional, NotContains,
 } from "class-validator";
 import {Status} from "@prisma/client";
+import {IsBeforeEndOfDayToday} from "../../config/date/validateIsToday";
 
 export class CreateUpdateAphDto {
-
     @IsOptional()
     userId: string;
 
     @IsOptional()
-    @IsString()
-    @Length(5, 100)
+    @IsString({ message: 'Nama Pemohon harus berupa string.' })
+    @Length(5, 100, { message: 'Nama Pemohon harus antara 5 hingga 100 karakter.' })
     namaPemohon: string;
 
-    @IsNotEmpty()
-    @IsString()
+    @IsNotEmpty({ message: 'NRP tidak boleh kosong.' })
+    @IsString({ message: 'NRP harus berupa string.' })
     NRP: string;
 
-    @IsNotEmpty()
-    @IsString()
+    @IsNotEmpty({ message: 'NRP_File tidak boleh kosong.' })
+    @IsString({ message: 'NRP_File harus berupa string.' })
     NRP_File: string;
 
-    @IsPhoneNumber('ID')
-    @IsNotEmpty()
+    @IsPhoneNumber('ID', { message: 'Nomor telepon tidak valid. Harus berupa nomor region indonesia' })
+    @IsNotEmpty({ message: 'No Telp tidak boleh kosong.' })
     noTelp: string;
 
-    @IsNotEmpty()
-    @IsEmail()
+    @IsNotEmpty({ message: 'Email tidak boleh kosong.' })
+    @IsEmail({}, { message: 'Format email tidak valid.' })
     email: string;
 
-    @IsNotEmpty()
-    @Length(5, 100)
     @IsOptional()
+    @IsString({ message: 'Nama Notaris harus berupa string.' })
+    @Length(5, 100, { message: 'Nama Notaris harus antara 5 hingga 100 karakter.' })
     nama_notaris: string;
 
     @IsOptional()
-    @IsString()
+    @IsString({ message: 'Kedudukan Notaris harus berupa string.' })
     kedudukan_notaris: string;
 
     @IsOptional()
-    @IsString()
-    @Length(20, 100)
+    @IsString({ message: 'Alamat Notaris harus berupa string.' })
+    @Length(20, 100, { message: 'Alamat Notaris harus antara 20 hingga 100 karakter.' })
     alamat_notaris: string;
 
-    @IsString()
     @IsOptional()
+    @IsString({ message: 'No Akta Notaris harus berupa string.' })
     no_akta_notaris: string;
 
     @IsOptional()
-    @MaxDate(new Date())
+    @IsBeforeEndOfDayToday({ message: 'Tanggal Surat Kuasa tidak boleh melebihi akhir hari ini.' })
     tanggal_akta_notaris: Date;
 
     @IsOptional()
-    @IsString()
+    @IsString({ message: 'Isi Akta harus berupa string.' })
     isi_akta: string;
 
-    @Length(10, 100)
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Nama Instansi tidak boleh kosong.' })
+    @Length(10, 100, { message: 'Nama Instansi harus antara 10 hingga 100 karakter.' })
     nama_instansi: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Unit Instansi tidak boleh kosong.' })
     unit_instansi: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Jabatan Instansi tidak boleh kosong.' })
     jabatan_instansi: string;
 
-    @Length(20, 100)
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Alamat Instansi tidak boleh kosong.' })
+    @Length(20, 100, { message: 'Alamat Instansi harus antara 20 hingga 100 karakter.' })
     alamat_instansi: string;
 
-    @IsNotEmpty()
-    @IsString()
-    @NotContains(' ', {message: 'No Surat tidak boleh mengandung spasi'})
+    @IsNotEmpty({ message: 'No Surat tidak boleh kosong.' })
+    @IsString({ message: 'No Surat harus berupa string.' })
+    @NotContains(' ', { message: 'No Surat tidak boleh mengandung spasi' })
     nosurat: string;
 
-    @IsNotEmpty()
-    @MaxDate(new Date())
+    @IsNotEmpty({ message: 'Tanggal Surat Kuasa tidak boleh kosong.' })
+    @IsBeforeEndOfDayToday({ message: 'Tanggal Surat Kuasa tidak boleh melebihi akhir hari ini.' })
     tgl_surat_kuasa: Date;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Surat Permohonan tidak boleh kosong.' })
     surat_permohonan: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Bukti Permohonan tidak boleh kosong.' })
     bukti_permohonan: string;
 
     @IsOptional()
-    @IsEnum(Status)
+    @IsEnum(Status, { message: 'Status tidak valid.' })
     status?: Status;
 
     @IsOptional()

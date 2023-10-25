@@ -42,13 +42,19 @@ let APHService = class APHService {
             where: { nosurat: data.nosurat },
         });
         if (existingRecord) {
-            throw new common_1.ConflictException('Nosurat already exists!');
+            throw new common_1.ConflictException('No surat sudah ada!');
         }
         return this.prisma.pemeriksaanAPH.create({
             data
         });
     }
     async updateAPH(id, data) {
+        const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
+            where: { nosurat: data.nosurat },
+        });
+        if (existingRecord) {
+            throw new common_1.ConflictException('No surat sudah ada!');
+        }
         return this.prisma.pemeriksaanAPH.update({
             where: { id: id },
             data: {
