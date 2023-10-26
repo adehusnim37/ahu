@@ -35,14 +35,33 @@ let APHService = class APHService {
             skip: pageIndex && pageSize ? (pageIndex - 1) * pageSize : undefined,
             take: pageSize ? parseInt(pageSize.toString(), 10) : undefined,
         };
+        if ((await this.prisma.pemeriksaanAPH.findMany(query)).length == 0) {
+            throw new common_1.NotFoundException('Data tidak ditemukan! Silahkan tambah data terlebih dahulu.');
+        }
         return this.prisma.pemeriksaanAPH.findMany(query);
     }
     async createAPH(data) {
-        const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
-            where: { nosurat: data.nosurat },
-        });
-        if (existingRecord) {
-            throw new common_1.ConflictException('No surat sudah ada!');
+        const conditions = [
+            {
+                query: { nosurat: data.nosurat },
+                errorMessage: 'No surat sudah ada!'
+            },
+            {
+                query: { id: data.id },
+                errorMessage: 'ID dokumen sudah ada!'
+            },
+            {
+                query: { notaris_id: data.notaris_id },
+                errorMessage: 'Notaris ID tidak boleh sama!'
+            }
+        ];
+        for (const condition of conditions) {
+            const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
+                where: condition.query
+            });
+            if (existingRecord) {
+                throw new common_1.ConflictException(condition.errorMessage);
+            }
         }
         return this.prisma.pemeriksaanAPH.create({
             data
@@ -50,10 +69,13 @@ let APHService = class APHService {
     }
     async updateAPH(id, data) {
         const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
-            where: { nosurat: data.nosurat },
+            where: { id: id },
         });
-        if (existingRecord) {
+        if (existingRecord.nosurat) {
             throw new common_1.ConflictException('No surat sudah ada!');
+        }
+        if (existingRecord.isSubmit) {
+            throw new common_1.ConflictException('Data telah disubmit!');
         }
         return this.prisma.pemeriksaanAPH.update({
             where: { id: id },
@@ -64,26 +86,44 @@ let APHService = class APHService {
         });
     }
     async deleteAPH(id) {
+        const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
+            where: { id: id },
+        });
+        if (!existingRecord)
+            throw new common_1.NotFoundException("Data tidak ditemukan untuk id: " + id);
+        if (existingRecord.isSubmit)
+            throw new common_1.ConflictException('Data telah disubmit & tidak bisa dihapus!');
         return this.prisma.pemeriksaanAPH.delete({
             where: { id: id }
         });
     }
     async getById(id) {
-        return this.prisma.pemeriksaanAPH.findUnique({
-            where: { id: id }
+        const APH = await this.prisma.pemeriksaanAPH.findUnique({
+            where: { id: id },
         });
+        if (!APH)
+            throw new common_1.NotFoundException("Data tidak ditemukan untuk id: " + id);
+        return APH;
     }
-    async SubmitAPH(id, data) {
+    async SubmitAPH(id) {
+        const existingData = await this.prisma.pemeriksaanAPH.findUnique({
+            where: { id: id },
+        });
+        if (!existingData)
+            throw new Error("Data tidak tersedia untuk id: " + id);
+        if (existingData.isSubmit)
+            throw new Error("Data telah disubmit untuk id: " + id);
+        existingData.isSubmit = true;
+        existingData.recUpdate = new Date();
+        existingData.dateSubmit = new Date();
+        existingData.status = "draft";
         return this.prisma.pemeriksaanAPH.update({
             where: { id: id },
-            data: {
-                ...data,
-                isSubmit: true,
-                recUpdate: new Date(),
-                dateSubmit: new Date(),
-                status: "draft"
-            }
+            data: existingData,
         });
+    }
+    async getCountAPH() {
+        return this.prisma.pemeriksaanAPH.count();
     }
 };
 exports.APHService = APHService;

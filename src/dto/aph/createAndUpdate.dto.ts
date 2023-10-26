@@ -11,12 +11,15 @@ import {Status} from "@prisma/client";
 import {IsBeforeEndOfDayToday} from "../../config/date/validateIsToday";
 
 export class CreateUpdateAphDto {
+
+    @IsNotEmpty({ message: 'ID tidak boleh kosong.' })
+    @IsString({ message: 'ID harus berupa string.' })
+    id: string;
+
     @IsOptional()
     userId: string;
 
     @IsOptional()
-    @IsString({ message: 'Nama Pemohon harus berupa string.' })
-    @Length(5, 100, { message: 'Nama Pemohon harus antara 5 hingga 100 karakter.' })
     namaPemohon: string;
 
     @IsNotEmpty({ message: 'NRP tidak boleh kosong.' })
@@ -34,6 +37,10 @@ export class CreateUpdateAphDto {
     @IsNotEmpty({ message: 'Email tidak boleh kosong.' })
     @IsEmail({}, { message: 'Format email tidak valid.' })
     email: string;
+
+    @IsString({ message: 'Notaris ID harus berupa string.' })
+    @IsNotEmpty({ message: 'Notaris ID tidak boleh kosong.' })
+    notaris_id: string;
 
     @IsOptional()
     @IsString({ message: 'Nama Notaris harus berupa string.' })

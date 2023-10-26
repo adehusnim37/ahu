@@ -6,8 +6,8 @@ export declare class APHController {
     constructor(APHService: APHService);
     getAll(pageIndex: number, pageSize: number, stringPencarian: string, sortBy: string, isSortAscending: boolean, res: any): Promise<any>;
     getById(id: string, res: any): Promise<pemeriksaanAPHModel>;
-    create(postdata: CreateUpdateAphDto, res: any): Promise<pemeriksaanAPHModel>;
-    submit(id: string, postdata: CreateUpdateAphDto, res: any): Promise<pemeriksaanAPHModel>;
+    create(postdata: CreateUpdateAphDto, req: Request, res: any): Promise<pemeriksaanAPHModel>;
+    submit(id: string, res: any): Promise<pemeriksaanAPHModel>;
     update(id: string, postdata: CreateUpdateAphDto, res: any): Promise<pemeriksaanAPHModel>;
     delete(id: string, res: any): Promise<pemeriksaanAPHModel>;
 }

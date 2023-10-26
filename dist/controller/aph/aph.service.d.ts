@@ -8,5 +8,6 @@ export declare class APHService {
     updateAPH(id: string, data: pemeriksaanAPHModel): Promise<pemeriksaanAPHModel>;
     deleteAPH(id: string): Promise<pemeriksaanAPHModel>;
     getById(id: string): Promise<pemeriksaanAPHModel>;
-    SubmitAPH(id: string, data: pemeriksaanAPHModel): Promise<pemeriksaanAPHModel>;
+    SubmitAPH(id: string): Promise<pemeriksaanAPHModel>;
+    getCountAPH(): Promise<number>;
 }

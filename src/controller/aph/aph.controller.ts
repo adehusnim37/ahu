@@ -9,21 +9,22 @@ import {
     Query,
     Response,
     UseGuards,
-    ValidationPipe
+    ValidationPipe,
+    Request,
 } from '@nestjs/common';
 import {APHService} from './aph.service';
 import {pemeriksaanAPHModel} from "../../model/aph/aph.model";
 import {CreateUpdateAphDto} from '../../dto/aph/createAndUpdate.dto';
 import {AuthGuard} from "../../auth/jwt-auth.guard";
 
-// @UseGuards(AuthGuard)
+
+@UseGuards(AuthGuard)
 @Controller('api/v1/aph')
 export class APHController {
 
     constructor(
         private readonly APHService: APHService,
-    ) {
-    }
+    ) {}
 
     @Get()
     async getAll(
@@ -36,24 +37,22 @@ export class APHController {
     ): Promise<any> {
         try {
             const APH = await this.APHService.getAllAPH(
-                pageIndex,
-                pageSize,
+                pageIndex ? pageIndex : 1,
+                pageSize ? pageSize : 10,
                 stringPencarian,
                 sortBy,
                 isSortAscending,
             );
-            console.log("After fetching data:", APH);
-            if (APH.length == 0) {
-                return res.status(200).json({
-                    message: 'Data tidak ditemukan / kosong',
-                });
-            }
+
+            const totalAPH = await this.APHService.getCountAPH();
+
+            // if pageIndex and pageSize is not null, then create default pagination pagesize is 10 and pageIndex is 1
             const page = {
-                count: APH.length,
-                pageIndex: pageIndex,
-                pageSize: pageSize,
+                count: totalAPH,
+                pageIndex: pageIndex ? pageIndex : 1,
+                pageSize: pageSize ? pageSize : 10,
                 isFirstPage: pageIndex == 1 ? true : false,
-                isLastPage: APH.length < pageSize ? true : false,
+                isLastPage: pageIndex >= Math.ceil(totalAPH / pageSize) ? true : false,
             }
             return res.status(200).json({
                 message: 'Data berhasil diambil',
@@ -91,9 +90,22 @@ export class APHController {
 
 
     @Post()
-    async create(@Body(ValidationPipe) postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
+    async create(@Body(ValidationPipe) postdata: CreateUpdateAphDto, @Request() req: Request, @Response() res): Promise<pemeriksaanAPHModel> {
         try {
-            const data = await this.APHService.createAPH(postdata);
+            // Extract user data from the request object
+            const userId = req['username'].id;
+            const namaPemohon = req['username'].nama;
+
+            console.log(userId, namaPemohon);
+
+            // TODO: Use the userId and userName as required in your logic
+
+            const data = await this.APHService.createAPH({
+                ...postdata,
+                userId: userId,
+                namaPemohon: namaPemohon,
+            });
+
             return res.status(201).json({
                 message: 'Data berhasil ditambahkan',
                 data: data,
@@ -107,15 +119,15 @@ export class APHController {
     }
 
 
+
     @Post('/submit/:id')
-    async submit(@Param('id') id: string, @Body() postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
+    async submit(
+        @Param('id') id: string,
+        @Response() res
+    ): Promise<pemeriksaanAPHModel> {
         try {
-            const data = await this.APHService.SubmitAPH(id, postdata);
-            if (data.isSubmit == true) {
-                return res.status(400).json({
-                    message: 'Data tidak dapat diupdate karena sudah diverifikasi',
-                });
-            }
+            const data = await this.APHService.SubmitAPH(id);
+
             return res.status(201).json({
                 message: 'Data berhasil diverifikasi',
                 data: data,
@@ -128,20 +140,12 @@ export class APHController {
         }
     }
 
+
     //check if the status is Diterima cannot be updated
     @Put(':id')
     async update(@Param('id') id: string, @Body() postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
         try {
-            const aphData = await this.APHService.getById(id);
-            // Check if the status is 'Diterima', if yes, return a 400 Bad Request response
-            if (aphData.isSubmit == true) {
-                return res.status(400).json({
-                    message: 'Data tidak dapat diupdate karena sudah diverifikasi',
-                });
-            }
             const update = await this.APHService.updateAPH(id, postdata);
-            //if aph data status is updated from here then the status is still menunggu
-
             return res.status(201).json({
                 message: 'Data berhasil diupdate',
                 data: update,
@@ -158,14 +162,6 @@ export class APHController {
     @Delete(':id')
     async delete(@Param('id') id: string, @Response() res): Promise<pemeriksaanAPHModel> {
         try {
-            const aphData = await this.APHService.getById(id);
-            // Check if the status is 'Diterima', if yes, return a 400 Bad Request response
-            if (aphData.isSubmit == true) {
-                return res.status(400).json({
-                    message: 'Data tidak dapat dihapus karena sudah diterima',
-                });
-            }
-
             await this.APHService.deleteAPH(id);
             return res.status(204).json({
                 message: 'Data berhasil dihapus',

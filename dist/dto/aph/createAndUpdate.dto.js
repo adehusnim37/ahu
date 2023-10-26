@@ -17,13 +17,16 @@ class CreateUpdateAphDto {
 }
 exports.CreateUpdateAphDto = CreateUpdateAphDto;
 __decorate([
+    (0, class_validator_1.IsNotEmpty)({ message: 'ID tidak boleh kosong.' }),
+    (0, class_validator_1.IsString)({ message: 'ID harus berupa string.' }),
+    __metadata("design:type", String)
+], CreateUpdateAphDto.prototype, "id", void 0);
+__decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "userId", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)({ message: 'Nama Pemohon harus berupa string.' }),
-    (0, class_validator_1.Length)(5, 100, { message: 'Nama Pemohon harus antara 5 hingga 100 karakter.' }),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "namaPemohon", void 0);
 __decorate([
@@ -46,6 +49,11 @@ __decorate([
     (0, class_validator_1.IsEmail)({}, { message: 'Format email tidak valid.' }),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsString)({ message: 'Notaris ID harus berupa string.' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Notaris ID tidak boleh kosong.' }),
+    __metadata("design:type", String)
+], CreateUpdateAphDto.prototype, "notaris_id", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)({ message: 'Nama Notaris harus berupa string.' }),

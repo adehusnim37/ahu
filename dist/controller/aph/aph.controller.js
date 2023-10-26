@@ -16,25 +16,21 @@ exports.APHController = void 0;
 const common_1 = require("@nestjs/common");
 const aph_service_1 = require("./aph.service");
 const createAndUpdate_dto_1 = require("../../dto/aph/createAndUpdate.dto");
+const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
 let APHController = class APHController {
     constructor(APHService) {
         this.APHService = APHService;
     }
     async getAll(pageIndex, pageSize, stringPencarian, sortBy, isSortAscending, res) {
         try {
-            const APH = await this.APHService.getAllAPH(pageIndex, pageSize, stringPencarian, sortBy, isSortAscending);
-            console.log("After fetching data:", APH);
-            if (APH.length == 0) {
-                return res.status(200).json({
-                    message: 'Data tidak ditemukan / kosong',
-                });
-            }
+            const APH = await this.APHService.getAllAPH(pageIndex ? pageIndex : 1, pageSize ? pageSize : 10, stringPencarian, sortBy, isSortAscending);
+            const totalAPH = await this.APHService.getCountAPH();
             const page = {
-                count: APH.length,
-                pageIndex: pageIndex,
-                pageSize: pageSize,
+                count: totalAPH,
+                pageIndex: pageIndex ? pageIndex : 1,
+                pageSize: pageSize ? pageSize : 10,
                 isFirstPage: pageIndex == 1 ? true : false,
-                isLastPage: APH.length < pageSize ? true : false,
+                isLastPage: pageIndex >= Math.ceil(totalAPH / pageSize) ? true : false,
             };
             return res.status(200).json({
                 message: 'Data berhasil diambil',
@@ -69,9 +65,16 @@ let APHController = class APHController {
             });
         }
     }
-    async create(postdata, res) {
+    async create(postdata, req, res) {
         try {
-            const data = await this.APHService.createAPH(postdata);
+            const userId = req['username'].id;
+            const namaPemohon = req['username'].nama;
+            console.log(userId, namaPemohon);
+            const data = await this.APHService.createAPH({
+                ...postdata,
+                userId: userId,
+                namaPemohon: namaPemohon,
+            });
             return res.status(201).json({
                 message: 'Data berhasil ditambahkan',
                 data: data,
@@ -84,14 +87,9 @@ let APHController = class APHController {
             });
         }
     }
-    async submit(id, postdata, res) {
+    async submit(id, res) {
         try {
-            const data = await this.APHService.SubmitAPH(id, postdata);
-            if (data.isSubmit == true) {
-                return res.status(400).json({
-                    message: 'Data tidak dapat diupdate karena sudah diverifikasi',
-                });
-            }
+            const data = await this.APHService.SubmitAPH(id);
             return res.status(201).json({
                 message: 'Data berhasil diverifikasi',
                 data: data,
@@ -106,12 +104,6 @@ let APHController = class APHController {
     }
     async update(id, postdata, res) {
         try {
-            const aphData = await this.APHService.getById(id);
-            if (aphData.isSubmit == true) {
-                return res.status(400).json({
-                    message: 'Data tidak dapat diupdate karena sudah diverifikasi',
-                });
-            }
             const update = await this.APHService.updateAPH(id, postdata);
             return res.status(201).json({
                 message: 'Data berhasil diupdate',
@@ -127,12 +119,6 @@ let APHController = class APHController {
     }
     async delete(id, res) {
         try {
-            const aphData = await this.APHService.getById(id);
-            if (aphData.isSubmit == true) {
-                return res.status(400).json({
-                    message: 'Data tidak dapat dihapus karena sudah diterima',
-                });
-            }
             await this.APHService.deleteAPH(id);
             return res.status(204).json({
                 message: 'Data berhasil dihapus',
@@ -169,18 +155,18 @@ __decorate([
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
-    __param(1, (0, common_1.Response)()),
+    __param(1, (0, common_1.Request)()),
+    __param(2, (0, common_1.Response)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [createAndUpdate_dto_1.CreateUpdateAphDto, Object]),
+    __metadata("design:paramtypes", [createAndUpdate_dto_1.CreateUpdateAphDto, Object, Object]),
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "create", null);
 __decorate([
     (0, common_1.Post)('/submit/:id'),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __param(2, (0, common_1.Response)()),
+    __param(1, (0, common_1.Response)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, createAndUpdate_dto_1.CreateUpdateAphDto, Object]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "submit", null);
 __decorate([
@@ -201,6 +187,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "delete", null);
 exports.APHController = APHController = __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.AuthGuard),
     (0, common_1.Controller)('api/v1/aph'),
     __metadata("design:paramtypes", [aph_service_1.APHService])
 ], APHController);

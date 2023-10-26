@@ -1,12 +1,13 @@
 import { Prisma, Status } from "@prisma/client";
 export declare class pemeriksaanAPHModel implements Prisma.pemeriksaanAPHCreateInput {
+    id: string;
     userId: string;
     namaPemohon: string;
     NRP: string;
     NRP_File: string;
     noTelp: string;
     email: string;
-    notaris_id?: string;
+    notaris_id: string;
     nama_notaris: string;
     kedudukan_notaris: string;
     alamat_notaris: string;
