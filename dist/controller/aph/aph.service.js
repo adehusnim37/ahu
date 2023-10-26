@@ -16,16 +16,21 @@ let APHService = class APHService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async getAllAPH(pageIndex, pageSize, stringPencarian, sortBy, isSortAscending) {
+    async getAllAPH(userId, pageIndex, pageSize, stringPencarian, sortBy, isSortAscending) {
         const query = {
             where: {
-                OR: stringPencarian
-                    ? [
-                        { namaPemohon: { contains: stringPencarian } },
-                        { nama_notaris: { contains: stringPencarian } },
-                        { recInsert: { equals: isNaN(Date.parse(stringPencarian)) ? undefined : new Date(stringPencarian) } },
-                    ]
-                    : undefined,
+                AND: [
+                    { userId: userId },
+                    {
+                        OR: stringPencarian
+                            ? [
+                                { namaPemohon: { contains: stringPencarian } },
+                                { nama_notaris: { contains: stringPencarian } },
+                                { recInsert: { equals: isNaN(Date.parse(stringPencarian)) ? undefined : new Date(stringPencarian) } }
+                            ]
+                            : undefined,
+                    }
+                ],
             },
             orderBy: sortBy
                 ? {
@@ -49,10 +54,6 @@ let APHService = class APHService {
             {
                 query: { id: data.id },
                 errorMessage: 'ID dokumen sudah ada!'
-            },
-            {
-                query: { notaris_id: data.notaris_id },
-                errorMessage: 'Notaris ID tidak boleh sama!'
             }
         ];
         for (const condition of conditions) {
@@ -67,10 +68,12 @@ let APHService = class APHService {
             data
         });
     }
-    async updateAPH(id, data) {
+    async updateAPH(id, data, userId) {
         const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
-            where: { id: id },
+            where: { id: id, userId: userId },
         });
+        if (!existingRecord)
+            throw new common_1.NotFoundException("Data tidak ditemukan untuk id: " + id);
         if (existingRecord.nosurat) {
             throw new common_1.ConflictException('No surat sudah ada!');
         }
@@ -85,9 +88,9 @@ let APHService = class APHService {
             }
         });
     }
-    async deleteAPH(id) {
+    async deleteAPH(id, userId) {
         const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
-            where: { id: id },
+            where: { id: id, userId: userId },
         });
         if (!existingRecord)
             throw new common_1.NotFoundException("Data tidak ditemukan untuk id: " + id);
@@ -97,22 +100,22 @@ let APHService = class APHService {
             where: { id: id }
         });
     }
-    async getById(id) {
+    async getById(id, userId) {
         const APH = await this.prisma.pemeriksaanAPH.findUnique({
-            where: { id: id },
+            where: { id: id, userId: userId },
         });
         if (!APH)
             throw new common_1.NotFoundException("Data tidak ditemukan untuk id: " + id);
         return APH;
     }
-    async SubmitAPH(id) {
+    async SubmitAPH(id, userId) {
         const existingData = await this.prisma.pemeriksaanAPH.findUnique({
-            where: { id: id },
+            where: { id: id, userId: userId },
         });
         if (!existingData)
-            throw new Error("Data tidak tersedia untuk id: " + id);
+            throw new common_1.ConflictException("Data tidak tersedia untuk id: " + id);
         if (existingData.isSubmit)
-            throw new Error("Data telah disubmit untuk id: " + id);
+            throw new common_1.ConflictException("Data telah disubmit untuk id: " + id);
         existingData.isSubmit = true;
         existingData.recUpdate = new Date();
         existingData.dateSubmit = new Date();

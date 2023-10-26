@@ -18,7 +18,7 @@ model pemeriksaanAPH {
   NRP_File             String
   noTelp               String
   email                String
-  notaris_id           String    @unique
+  notaris_id           String
   nama_notaris         String?
   kedudukan_notaris    String?
   alamat_notaris       String?

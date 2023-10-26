@@ -2,7 +2,6 @@ import {PrismaService} from "./prisma.service";
 import {pemeriksaanAPHModel} from "../../model/aph/aph.model";
 import {ConflictException, Injectable, NotFoundException} from "@nestjs/common";
 import {Prisma} from "@prisma/client";
-import {SubmitAphDto} from "../../dto/aph/submit.dto";
 
 
 @Injectable()
@@ -11,6 +10,7 @@ export class APHService {
     }
 
     async getAllAPH(
+        userId: string,
         pageIndex?: number, // optional
         pageSize?: number, // optional
         stringPencarian?: string, // optional
@@ -19,15 +19,20 @@ export class APHService {
     ): Promise<pemeriksaanAPHModel[]> {
         const query: Prisma.pemeriksaanAPHFindManyArgs = {
             where: {
-                OR: stringPencarian
-                    ? [
-                        {namaPemohon: {contains: stringPencarian}},
-                        {nama_notaris: {contains: stringPencarian}},
-                        // if the recInsert is included in the search string, then convert the string to Date object then search
-                        {recInsert: {equals: isNaN(Date.parse(stringPencarian)) ? undefined : new Date(stringPencarian)}}, // jika stringPencarian gabisa di convert ke tanggal maka undefined, jika bisa maka convert ke tanggal lalu cari
-                    ]
-                    : undefined,
+                AND: [
+                    {userId: userId},  // Add this
+                    {
+                        OR: stringPencarian
+                            ? [
+                                {namaPemohon: {contains: stringPencarian}},
+                                {nama_notaris: {contains: stringPencarian}},
+                                {recInsert: {equals: isNaN(Date.parse(stringPencarian)) ? undefined : new Date(stringPencarian)}}
+                            ]
+                            : undefined,
+                    }
+                ],
             },
+
             orderBy: sortBy
                 ? {
                     [sortBy]: isSortAscending ? 'asc' : 'desc',
@@ -49,16 +54,12 @@ export class APHService {
     async createAPH(data: pemeriksaanAPHModel): Promise<pemeriksaanAPHModel> {
         const conditions = [
             {
-                query: { nosurat: data.nosurat },
+                query: {nosurat: data.nosurat},
                 errorMessage: 'No surat sudah ada!'
             },
             {
-                query: { id: data.id },
+                query: {id: data.id},
                 errorMessage: 'ID dokumen sudah ada!'
-            },
-            {
-                query: { notaris_id: data.notaris_id },
-                errorMessage: 'Notaris ID tidak boleh sama!'
             }
         ];
 
@@ -75,10 +76,12 @@ export class APHService {
         });
     }
 
-    async updateAPH(id: string, data: pemeriksaanAPHModel): Promise<pemeriksaanAPHModel> {
+    async updateAPH(id: string, data: pemeriksaanAPHModel, userId): Promise<pemeriksaanAPHModel> {
         const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
-            where: {id: id},
+            where: {id: id, userId: userId},
         });
+
+        if (!existingRecord) throw new NotFoundException("Data tidak ditemukan untuk id: " + id);
 
         if (existingRecord.nosurat) {
             throw new ConflictException('No surat sudah ada!');
@@ -96,9 +99,9 @@ export class APHService {
         });
     }
 
-    async deleteAPH(id: string): Promise<pemeriksaanAPHModel> {
+    async deleteAPH(id: string, userId): Promise<pemeriksaanAPHModel> {
         const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
-            where: {id: id},
+            where: {id: id, userId: userId},
         });
 
         if (!existingRecord) throw new NotFoundException("Data tidak ditemukan untuk id: " + id);
@@ -110,23 +113,23 @@ export class APHService {
         });
     }
 
-    async getById(id: string): Promise<pemeriksaanAPHModel> {
+    async getById(id: string, userId): Promise<pemeriksaanAPHModel> {
         // Use Prisma Client to find the single record by id, if the record is not found, throw the NotFoundException
         const APH = await this.prisma.pemeriksaanAPH.findUnique({
-            where: {id: id},
+            where: {id: id, userId: userId},
         })
         if (!APH) throw new NotFoundException("Data tidak ditemukan untuk id: " + id);
         return APH;
     }
 
-    async SubmitAPH(id: string): Promise<pemeriksaanAPHModel> {
+    async SubmitAPH(id: string, userId): Promise<pemeriksaanAPHModel> {
         const existingData = await this.prisma.pemeriksaanAPH.findUnique({
-            where: {id: id},
+            where: {id: id, userId: userId},
         });
 
-        if (!existingData) throw new Error("Data tidak tersedia untuk id: " + id);
+        if (!existingData) throw new ConflictException("Data tidak tersedia untuk id: " + id);
 
-        if (existingData.isSubmit) throw new Error("Data telah disubmit untuk id: " + id);
+        if (existingData.isSubmit) throw new ConflictException("Data telah disubmit untuk id: " + id);
 
         existingData.isSubmit = true;
         existingData.recUpdate = new Date();

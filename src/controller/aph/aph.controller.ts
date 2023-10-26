@@ -1,21 +1,24 @@
 import {
     Body,
+    ConflictException,
     Controller,
     Delete,
     Get,
+    NotFoundException,
     Param,
     Post,
     Put,
     Query,
+    Request,
     Response,
     UseGuards,
     ValidationPipe,
-    Request,
 } from '@nestjs/common';
 import {APHService} from './aph.service';
 import {pemeriksaanAPHModel} from "../../model/aph/aph.model";
 import {CreateUpdateAphDto} from '../../dto/aph/createAndUpdate.dto';
 import {AuthGuard} from "../../auth/jwt-auth.guard";
+import {createErrorResponse400, createErrorResponse404} from "../../config/handler/error.handler";
 
 
 @UseGuards(AuthGuard)
@@ -24,7 +27,8 @@ export class APHController {
 
     constructor(
         private readonly APHService: APHService,
-    ) {}
+    ) {
+    }
 
     @Get()
     async getAll(
@@ -34,9 +38,13 @@ export class APHController {
         @Query('sortBy') sortBy: string,
         @Query('isSortAscending') isSortAscending: boolean,
         @Response() res,
+        @Request() req: Request,
     ): Promise<any> {
         try {
+            const userId = req['username'].id;
+            const admin = req['username'].role.includes('admin');
             const APH = await this.APHService.getAllAPH(
+                admin? undefined : userId,
                 pageIndex ? pageIndex : 1,
                 pageSize ? pageSize : 10,
                 stringPencarian,
@@ -60,6 +68,11 @@ export class APHController {
                 page: page,
             });
         } catch (err) {
+            if (err instanceof NotFoundException) {
+                return createErrorResponse404(res, err.message)
+            } else if (err instanceof ConflictException) {
+                return createErrorResponse400(res, err.message)
+            }
             return res.status(500).json({
                 message: 'Data tidak dapat diambil',
                 data: err.message,
@@ -68,19 +81,22 @@ export class APHController {
     }
 
     @Get(':id')
-    async getById(@Param('id') id: string, @Response() res): Promise<pemeriksaanAPHModel> {
+    async getById(@Param('id') id: string, @Response() res, @Request() req: Request): Promise<pemeriksaanAPHModel> {
         try {
-            const APH = await this.APHService.getById(id);
-            if (!APH) {
-                return res.status(404).json({
-                    message: 'Data tidak ditemukan',
-                });
-            }
+            const userId = req['username'].id;
+            // if the role is admin then the user can access all data
+            const admin = req['username'].role.includes('admin');
+            const APH = await this.APHService.getById(id, admin? undefined : userId);
             return res.status(200).json({
                 message: 'Data berhasil diambil',
                 data: APH,
             });
         } catch (err) {
+            if (err instanceof NotFoundException) {
+                return createErrorResponse404(res, err.message)
+            } else if (err instanceof ConflictException) {
+                return createErrorResponse400(res, err.message)
+            }
             return res.status(500).json({
                 message: 'Data tidak dapat diambil',
                 data: err.message,
@@ -111,30 +127,42 @@ export class APHController {
                 data: data,
             });
         } catch (err) {
+            if (err instanceof NotFoundException) {
+                return createErrorResponse404(res, err.message)
+            } else if (err instanceof ConflictException) {
+                return createErrorResponse400(res, err.message)
+            }
             return res.status(500).json({
-                message: 'Data tidak dapat disimpan',
+                message: 'Data tidak dapat diambil',
                 data: err.message,
             });
         }
     }
 
 
-
     @Post('/submit/:id')
     async submit(
         @Param('id') id: string,
-        @Response() res
+        @Response() res,
+        @Request() req: Request
     ): Promise<pemeriksaanAPHModel> {
         try {
-            const data = await this.APHService.SubmitAPH(id);
+            const userId = req['username'].id;
+            const admin = req['username'].role.includes('admin');
+            const data = await this.APHService.SubmitAPH(id, admin? undefined : userId);
 
             return res.status(201).json({
                 message: 'Data berhasil diverifikasi',
                 data: data,
             });
         } catch (err) {
+            if (err instanceof NotFoundException) {
+                return createErrorResponse404(res, err.message)
+            } else if (err instanceof ConflictException) {
+                return createErrorResponse400(res, err.message)
+            }
             return res.status(500).json({
-                message: 'Data tidak dapat disimpan',
+                message: 'Data tidak dapat diambil',
                 data: err.message,
             });
         }
@@ -143,16 +171,23 @@ export class APHController {
 
     //check if the status is Diterima cannot be updated
     @Put(':id')
-    async update(@Param('id') id: string, @Body() postdata: CreateUpdateAphDto, @Response() res): Promise<pemeriksaanAPHModel> {
+    async update(@Param('id') id: string, @Body() postdata: CreateUpdateAphDto, @Response() res, @Request() req: Request): Promise<pemeriksaanAPHModel> {
         try {
-            const update = await this.APHService.updateAPH(id, postdata);
+            const userId = req['username'].id;
+            const admin = req['username'].role.includes('admin');
+            const update = await this.APHService.updateAPH(id, postdata, admin? undefined : userId);
             return res.status(201).json({
                 message: 'Data berhasil diupdate',
                 data: update,
             });
         } catch (err) {
+            if (err instanceof NotFoundException) {
+                return createErrorResponse404(res, err.message)
+            } else if (err instanceof ConflictException) {
+                return createErrorResponse400(res, err.message)
+            }
             return res.status(500).json({
-                message: 'Data tidak dapat diupdate',
+                message: 'Data tidak dapat diambil',
                 data: err.message,
             });
         }
@@ -160,16 +195,23 @@ export class APHController {
     }
 
     @Delete(':id')
-    async delete(@Param('id') id: string, @Response() res): Promise<pemeriksaanAPHModel> {
+    async delete(@Param('id') id: string, @Response() res, @Request() req: Request): Promise<pemeriksaanAPHModel> {
         try {
-            await this.APHService.deleteAPH(id);
+            const userId = req['username'].id;
+            const admin = req['username'].role.includes('admin');
+            await this.APHService.deleteAPH(id, admin? undefined : userId);
             return res.status(204).json({
                 message: 'Data berhasil dihapus',
             });
-        } catch (error) {
-            // Handle error appropriately (e.g., record not found)
+        } catch (err) {
+            if (err instanceof NotFoundException) {
+                return createErrorResponse404(res, err.message)
+            } else if (err instanceof ConflictException) {
+                return createErrorResponse400(res, err.message)
+            }
             return res.status(500).json({
-                message: 'Data tidak dapat dihapus',
+                message: 'Data tidak dapat diambil',
+                data: err.message,
             });
         }
     }

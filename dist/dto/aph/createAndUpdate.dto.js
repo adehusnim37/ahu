@@ -19,6 +19,7 @@ exports.CreateUpdateAphDto = CreateUpdateAphDto;
 __decorate([
     (0, class_validator_1.IsNotEmpty)({ message: 'ID tidak boleh kosong.' }),
     (0, class_validator_1.IsString)({ message: 'ID harus berupa string.' }),
+    (0, class_validator_1.IsUUID)('4', { message: 'ID harus UUID & harus versi 4.' }),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "id", void 0);
 __decorate([

@@ -6,12 +6,7 @@ const prisma_exception_filter_1 = require("./config/prisma/prisma-exception.filt
 const common_1 = require("@nestjs/common");
 const http_exceptions_filter_1 = require("./filter/http-exceptions.filter");
 async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule);
-    app.enableCors({
-        origin: '*',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-        allowedHeaders: 'Content-Type, Accept',
-    });
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, { cors: true });
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
         transform: true,

@@ -5,7 +5,7 @@ import {
     IsString,
     Length,
     IsEnum,
-    IsOptional, NotContains,
+    IsOptional, NotContains, IsUUID,
 } from "class-validator";
 import {Status} from "@prisma/client";
 import {IsBeforeEndOfDayToday} from "../../config/date/validateIsToday";
@@ -14,6 +14,7 @@ export class CreateUpdateAphDto {
 
     @IsNotEmpty({ message: 'ID tidak boleh kosong.' })
     @IsString({ message: 'ID harus berupa string.' })
+    @IsUUID('4', { message: 'ID harus UUID & harus versi 4.' })
     id: string;
 
     @IsOptional()

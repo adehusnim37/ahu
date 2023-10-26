@@ -17,13 +17,16 @@ const common_1 = require("@nestjs/common");
 const aph_service_1 = require("./aph.service");
 const createAndUpdate_dto_1 = require("../../dto/aph/createAndUpdate.dto");
 const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
+const error_handler_1 = require("../../config/handler/error.handler");
 let APHController = class APHController {
     constructor(APHService) {
         this.APHService = APHService;
     }
-    async getAll(pageIndex, pageSize, stringPencarian, sortBy, isSortAscending, res) {
+    async getAll(pageIndex, pageSize, stringPencarian, sortBy, isSortAscending, res, req) {
         try {
-            const APH = await this.APHService.getAllAPH(pageIndex ? pageIndex : 1, pageSize ? pageSize : 10, stringPencarian, sortBy, isSortAscending);
+            const userId = req['username'].id;
+            const admin = req['username'].role.includes('admin');
+            const APH = await this.APHService.getAllAPH(admin ? undefined : userId, pageIndex ? pageIndex : 1, pageSize ? pageSize : 10, stringPencarian, sortBy, isSortAscending);
             const totalAPH = await this.APHService.getCountAPH();
             const page = {
                 count: totalAPH,
@@ -39,26 +42,35 @@ let APHController = class APHController {
             });
         }
         catch (err) {
+            if (err instanceof common_1.NotFoundException) {
+                return (0, error_handler_1.createErrorResponse404)(res, err.message);
+            }
+            else if (err instanceof common_1.ConflictException) {
+                return (0, error_handler_1.createErrorResponse400)(res, err.message);
+            }
             return res.status(500).json({
                 message: 'Data tidak dapat diambil',
                 data: err.message,
             });
         }
     }
-    async getById(id, res) {
+    async getById(id, res, req) {
         try {
-            const APH = await this.APHService.getById(id);
-            if (!APH) {
-                return res.status(404).json({
-                    message: 'Data tidak ditemukan',
-                });
-            }
+            const userId = req['username'].id;
+            const admin = req['username'].role.includes('admin');
+            const APH = await this.APHService.getById(id, admin ? undefined : userId);
             return res.status(200).json({
                 message: 'Data berhasil diambil',
                 data: APH,
             });
         }
         catch (err) {
+            if (err instanceof common_1.NotFoundException) {
+                return (0, error_handler_1.createErrorResponse404)(res, err.message);
+            }
+            else if (err instanceof common_1.ConflictException) {
+                return (0, error_handler_1.createErrorResponse400)(res, err.message);
+            }
             return res.status(500).json({
                 message: 'Data tidak dapat diambil',
                 data: err.message,
@@ -81,52 +93,83 @@ let APHController = class APHController {
             });
         }
         catch (err) {
+            if (err instanceof common_1.NotFoundException) {
+                return (0, error_handler_1.createErrorResponse404)(res, err.message);
+            }
+            else if (err instanceof common_1.ConflictException) {
+                return (0, error_handler_1.createErrorResponse400)(res, err.message);
+            }
             return res.status(500).json({
-                message: 'Data tidak dapat disimpan',
+                message: 'Data tidak dapat diambil',
                 data: err.message,
             });
         }
     }
-    async submit(id, res) {
+    async submit(id, res, req) {
         try {
-            const data = await this.APHService.SubmitAPH(id);
+            const userId = req['username'].id;
+            const admin = req['username'].role.includes('admin');
+            const data = await this.APHService.SubmitAPH(id, admin ? undefined : userId);
             return res.status(201).json({
                 message: 'Data berhasil diverifikasi',
                 data: data,
             });
         }
         catch (err) {
+            if (err instanceof common_1.NotFoundException) {
+                return (0, error_handler_1.createErrorResponse404)(res, err.message);
+            }
+            else if (err instanceof common_1.ConflictException) {
+                return (0, error_handler_1.createErrorResponse400)(res, err.message);
+            }
             return res.status(500).json({
-                message: 'Data tidak dapat disimpan',
+                message: 'Data tidak dapat diambil',
                 data: err.message,
             });
         }
     }
-    async update(id, postdata, res) {
+    async update(id, postdata, res, req) {
         try {
-            const update = await this.APHService.updateAPH(id, postdata);
+            const userId = req['username'].id;
+            const admin = req['username'].role.includes('admin');
+            const update = await this.APHService.updateAPH(id, postdata, admin ? undefined : userId);
             return res.status(201).json({
                 message: 'Data berhasil diupdate',
                 data: update,
             });
         }
         catch (err) {
+            if (err instanceof common_1.NotFoundException) {
+                return (0, error_handler_1.createErrorResponse404)(res, err.message);
+            }
+            else if (err instanceof common_1.ConflictException) {
+                return (0, error_handler_1.createErrorResponse400)(res, err.message);
+            }
             return res.status(500).json({
-                message: 'Data tidak dapat diupdate',
+                message: 'Data tidak dapat diambil',
                 data: err.message,
             });
         }
     }
-    async delete(id, res) {
+    async delete(id, res, req) {
         try {
-            await this.APHService.deleteAPH(id);
+            const userId = req['username'].id;
+            const admin = req['username'].role.includes('admin');
+            await this.APHService.deleteAPH(id, admin ? undefined : userId);
             return res.status(204).json({
                 message: 'Data berhasil dihapus',
             });
         }
-        catch (error) {
+        catch (err) {
+            if (err instanceof common_1.NotFoundException) {
+                return (0, error_handler_1.createErrorResponse404)(res, err.message);
+            }
+            else if (err instanceof common_1.ConflictException) {
+                return (0, error_handler_1.createErrorResponse400)(res, err.message);
+            }
             return res.status(500).json({
-                message: 'Data tidak dapat dihapus',
+                message: 'Data tidak dapat diambil',
+                data: err.message,
             });
         }
     }
@@ -140,16 +183,18 @@ __decorate([
     __param(3, (0, common_1.Query)('sortBy')),
     __param(4, (0, common_1.Query)('isSortAscending')),
     __param(5, (0, common_1.Response)()),
+    __param(6, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, String, String, Boolean, Object]),
+    __metadata("design:paramtypes", [Number, Number, String, String, Boolean, Object, Object]),
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "getAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Response)()),
+    __param(2, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, Object, Object]),
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "getById", null);
 __decorate([
@@ -165,8 +210,9 @@ __decorate([
     (0, common_1.Post)('/submit/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Response)()),
+    __param(2, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, Object, Object]),
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "submit", null);
 __decorate([
@@ -174,16 +220,18 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Response)()),
+    __param(3, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, createAndUpdate_dto_1.CreateUpdateAphDto, Object]),
+    __metadata("design:paramtypes", [String, createAndUpdate_dto_1.CreateUpdateAphDto, Object, Object]),
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Response)()),
+    __param(2, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, Object, Object]),
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "delete", null);
 exports.APHController = APHController = __decorate([
