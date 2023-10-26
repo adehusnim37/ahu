@@ -5,12 +5,12 @@ import { ValidationPipe, BadRequestException } from '@nestjs/common';
 import {HttpExceptionFilter} from "./filter/http-exceptions.filter";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
-    app.enableCors({
-        origin: '*',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-        allowedHeaders: 'Content-Type, Accept',
-    })
+    const app = await NestFactory.create(AppModule, {cors: true});
+    // app.enableCors({
+    //     origin: '*',
+    //     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    //     allowedHeaders: 'Content-Type, Accept',
+    // })
 
     app.useGlobalPipes(
         new ValidationPipe({
