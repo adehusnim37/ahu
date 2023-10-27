@@ -16,7 +16,8 @@ let APHService = class APHService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async getAllAPH(userId, pageIndex, pageSize, stringPencarian, sortBy, isSortAscending) {
+    async getAllAPH(userId, PaginationDto) {
+        const { pageIndex = 1, pageSize = 10, stringPencarian, sortBy, isSortAscending } = PaginationDto;
         const query = {
             where: {
                 AND: [
@@ -125,8 +126,10 @@ let APHService = class APHService {
             data: existingData,
         });
     }
-    async getCountAPH() {
-        return this.prisma.pemeriksaanAPH.count();
+    async getCountAPH(userId) {
+        return this.prisma.pemeriksaanAPH.count({
+            where: { userId: userId }
+        });
     }
 };
 exports.APHService = APHService;

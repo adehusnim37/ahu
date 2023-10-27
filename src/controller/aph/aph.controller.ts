@@ -7,8 +7,7 @@ import {
     NotFoundException,
     Param,
     Post,
-    Put,
-    Query,
+    Put, Query,
     Request,
     Response,
     UseGuards,
@@ -17,8 +16,9 @@ import {
 import {APHService} from './aph.service';
 import {pemeriksaanAPHModel} from "../../model/aph/aph.model";
 import {CreateUpdateAphDto} from '../../dto/aph/createAndUpdate.dto';
+import {PaginationDto} from "../../dto/pagination.dto";
 import {AuthGuard} from "../../auth/jwt-auth.guard";
-import {createErrorResponse400, createErrorResponse404} from "../../config/handler/error.handler";
+import {createErrorResponse400, createErrorResponse404} from "../../filter/errors.filter";
 
 
 @UseGuards(AuthGuard)
@@ -32,33 +32,27 @@ export class APHController {
 
     @Get()
     async getAll(
-        @Query('pageIndex') pageIndex: number,
-        @Query('pageSize') pageSize: number,
-        @Query('stringPencarian') stringPencarian: string,
-        @Query('sortBy') sortBy: string,
-        @Query('isSortAscending') isSortAscending: boolean,
+        @Query() PaginationDto: PaginationDto,
         @Response() res,
         @Request() req: Request,
     ): Promise<any> {
         try {
             const userId = req['username'].id;
             const admin = req['username'].role.includes('admin');
+            const { pageIndex, pageSize } = PaginationDto;
             const APH = await this.APHService.getAllAPH(
-                admin? undefined : userId,
-                pageIndex ? pageIndex : 1,
-                pageSize ? pageSize : 10,
-                stringPencarian,
-                sortBy,
-                isSortAscending,
+                admin ? undefined : userId,
+                PaginationDto,
             );
 
-            const totalAPH = await this.APHService.getCountAPH();
+            const totalAPH = await this.APHService.getCountAPH(admin ? undefined : userId);
+            console.log(totalAPH);
 
             // if pageIndex and pageSize is not null, then create default pagination pagesize is 10 and pageIndex is 1
             const page = {
                 count: totalAPH,
-                pageIndex: pageIndex ? pageIndex : 1,
-                pageSize: pageSize ? pageSize : 10,
+                pageIndex: pageIndex,
+                pageSize: pageSize,
                 isFirstPage: pageIndex == 1 ? true : false,
                 isLastPage: pageIndex >= Math.ceil(totalAPH / pageSize) ? true : false,
             }
@@ -86,7 +80,7 @@ export class APHController {
             const userId = req['username'].id;
             // if the role is admin then the user can access all data
             const admin = req['username'].role.includes('admin');
-            const APH = await this.APHService.getById(id, admin? undefined : userId);
+            const APH = await this.APHService.getById(id, admin ? undefined : userId);
             return res.status(200).json({
                 message: 'Data berhasil diambil',
                 data: APH,
@@ -149,7 +143,7 @@ export class APHController {
         try {
             const userId = req['username'].id;
             const admin = req['username'].role.includes('admin');
-            const data = await this.APHService.SubmitAPH(id, admin? undefined : userId);
+            const data = await this.APHService.SubmitAPH(id, admin ? undefined : userId);
 
             return res.status(201).json({
                 message: 'Data berhasil diverifikasi',
@@ -175,7 +169,7 @@ export class APHController {
         try {
             const userId = req['username'].id;
             const admin = req['username'].role.includes('admin');
-            const update = await this.APHService.updateAPH(id, postdata, admin? undefined : userId);
+            const update = await this.APHService.updateAPH(id, postdata, admin ? undefined : userId);
             return res.status(201).json({
                 message: 'Data berhasil diupdate',
                 data: update,
@@ -199,7 +193,7 @@ export class APHController {
         try {
             const userId = req['username'].id;
             const admin = req['username'].role.includes('admin');
-            await this.APHService.deleteAPH(id, admin? undefined : userId);
+            await this.APHService.deleteAPH(id, admin ? undefined : userId);
             return res.status(204).json({
                 message: 'Data berhasil dihapus',
             });

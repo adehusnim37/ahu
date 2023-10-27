@@ -24,6 +24,7 @@ async function bootstrap() {
                 throw new BadRequestException(result);
             },
             stopAtFirstError: true,
+            forbidNonWhitelisted: true,
         }),
     );
 

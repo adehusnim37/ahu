@@ -13,4 +13,4 @@ function createErrorResponse404(res, message) {
     });
 }
 exports.createErrorResponse404 = createErrorResponse404;
-//# sourceMappingURL=error.handler.js.map
+//# sourceMappingURL=errors.filter.js.map

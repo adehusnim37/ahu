@@ -1,6 +1,7 @@
 import {PrismaService} from "./prisma.service";
 import {pemeriksaanAPHModel} from "../../model/aph/aph.model";
 import {ConflictException, Injectable, NotFoundException} from "@nestjs/common";
+import {PaginationDto} from "../../dto/pagination.dto";
 import {Prisma} from "@prisma/client";
 
 
@@ -11,16 +12,13 @@ export class APHService {
 
     async getAllAPH(
         userId: string,
-        pageIndex?: number, // optional
-        pageSize?: number, // optional
-        stringPencarian?: string, // optional
-        sortBy?: string, // optional
-        isSortAscending?: boolean // optional
+        PaginationDto: PaginationDto,
     ): Promise<pemeriksaanAPHModel[]> {
+        const { pageIndex = 1, pageSize = 10, stringPencarian, sortBy, isSortAscending } = PaginationDto;
         const query: Prisma.pemeriksaanAPHFindManyArgs = {
             where: {
                 AND: [
-                    {userId: userId},  // Add this
+                    {userId: userId},  // check if userId is not null or undefined
                     {
                         OR: stringPencarian
                             ? [
@@ -142,8 +140,11 @@ export class APHService {
         });
     }
 
-    async getCountAPH(): Promise<number> {
-        return this.prisma.pemeriksaanAPH.count();
+    async getCountAPH(userId:string): Promise<number> {
+        // count all data if its created by the user
+        return this.prisma.pemeriksaanAPH.count({
+            where: {userId: userId}
+        });
     }
 
 

@@ -16,22 +16,25 @@ exports.APHController = void 0;
 const common_1 = require("@nestjs/common");
 const aph_service_1 = require("./aph.service");
 const createAndUpdate_dto_1 = require("../../dto/aph/createAndUpdate.dto");
+const pagination_dto_1 = require("../../dto/pagination.dto");
 const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
-const error_handler_1 = require("../../config/handler/error.handler");
+const errors_filter_1 = require("../../filter/errors.filter");
 let APHController = class APHController {
     constructor(APHService) {
         this.APHService = APHService;
     }
-    async getAll(pageIndex, pageSize, stringPencarian, sortBy, isSortAscending, res, req) {
+    async getAll(PaginationDto, res, req) {
         try {
             const userId = req['username'].id;
             const admin = req['username'].role.includes('admin');
-            const APH = await this.APHService.getAllAPH(admin ? undefined : userId, pageIndex ? pageIndex : 1, pageSize ? pageSize : 10, stringPencarian, sortBy, isSortAscending);
-            const totalAPH = await this.APHService.getCountAPH();
+            const { pageIndex, pageSize } = PaginationDto;
+            const APH = await this.APHService.getAllAPH(admin ? undefined : userId, PaginationDto);
+            const totalAPH = await this.APHService.getCountAPH(admin ? undefined : userId);
+            console.log(totalAPH);
             const page = {
                 count: totalAPH,
-                pageIndex: pageIndex ? pageIndex : 1,
-                pageSize: pageSize ? pageSize : 10,
+                pageIndex: pageIndex,
+                pageSize: pageSize,
                 isFirstPage: pageIndex == 1 ? true : false,
                 isLastPage: pageIndex >= Math.ceil(totalAPH / pageSize) ? true : false,
             };
@@ -43,10 +46,10 @@ let APHController = class APHController {
         }
         catch (err) {
             if (err instanceof common_1.NotFoundException) {
-                return (0, error_handler_1.createErrorResponse404)(res, err.message);
+                return (0, errors_filter_1.createErrorResponse404)(res, err.message);
             }
             else if (err instanceof common_1.ConflictException) {
-                return (0, error_handler_1.createErrorResponse400)(res, err.message);
+                return (0, errors_filter_1.createErrorResponse400)(res, err.message);
             }
             return res.status(500).json({
                 message: 'Data tidak dapat diambil',
@@ -66,10 +69,10 @@ let APHController = class APHController {
         }
         catch (err) {
             if (err instanceof common_1.NotFoundException) {
-                return (0, error_handler_1.createErrorResponse404)(res, err.message);
+                return (0, errors_filter_1.createErrorResponse404)(res, err.message);
             }
             else if (err instanceof common_1.ConflictException) {
-                return (0, error_handler_1.createErrorResponse400)(res, err.message);
+                return (0, errors_filter_1.createErrorResponse400)(res, err.message);
             }
             return res.status(500).json({
                 message: 'Data tidak dapat diambil',
@@ -94,10 +97,10 @@ let APHController = class APHController {
         }
         catch (err) {
             if (err instanceof common_1.NotFoundException) {
-                return (0, error_handler_1.createErrorResponse404)(res, err.message);
+                return (0, errors_filter_1.createErrorResponse404)(res, err.message);
             }
             else if (err instanceof common_1.ConflictException) {
-                return (0, error_handler_1.createErrorResponse400)(res, err.message);
+                return (0, errors_filter_1.createErrorResponse400)(res, err.message);
             }
             return res.status(500).json({
                 message: 'Data tidak dapat diambil',
@@ -117,10 +120,10 @@ let APHController = class APHController {
         }
         catch (err) {
             if (err instanceof common_1.NotFoundException) {
-                return (0, error_handler_1.createErrorResponse404)(res, err.message);
+                return (0, errors_filter_1.createErrorResponse404)(res, err.message);
             }
             else if (err instanceof common_1.ConflictException) {
-                return (0, error_handler_1.createErrorResponse400)(res, err.message);
+                return (0, errors_filter_1.createErrorResponse400)(res, err.message);
             }
             return res.status(500).json({
                 message: 'Data tidak dapat diambil',
@@ -140,10 +143,10 @@ let APHController = class APHController {
         }
         catch (err) {
             if (err instanceof common_1.NotFoundException) {
-                return (0, error_handler_1.createErrorResponse404)(res, err.message);
+                return (0, errors_filter_1.createErrorResponse404)(res, err.message);
             }
             else if (err instanceof common_1.ConflictException) {
-                return (0, error_handler_1.createErrorResponse400)(res, err.message);
+                return (0, errors_filter_1.createErrorResponse400)(res, err.message);
             }
             return res.status(500).json({
                 message: 'Data tidak dapat diambil',
@@ -162,10 +165,10 @@ let APHController = class APHController {
         }
         catch (err) {
             if (err instanceof common_1.NotFoundException) {
-                return (0, error_handler_1.createErrorResponse404)(res, err.message);
+                return (0, errors_filter_1.createErrorResponse404)(res, err.message);
             }
             else if (err instanceof common_1.ConflictException) {
-                return (0, error_handler_1.createErrorResponse400)(res, err.message);
+                return (0, errors_filter_1.createErrorResponse400)(res, err.message);
             }
             return res.status(500).json({
                 message: 'Data tidak dapat diambil',
@@ -177,15 +180,11 @@ let APHController = class APHController {
 exports.APHController = APHController;
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)('pageIndex')),
-    __param(1, (0, common_1.Query)('pageSize')),
-    __param(2, (0, common_1.Query)('stringPencarian')),
-    __param(3, (0, common_1.Query)('sortBy')),
-    __param(4, (0, common_1.Query)('isSortAscending')),
-    __param(5, (0, common_1.Response)()),
-    __param(6, (0, common_1.Request)()),
+    __param(0, (0, common_1.Query)()),
+    __param(1, (0, common_1.Response)()),
+    __param(2, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, String, String, Boolean, Object, Object]),
+    __metadata("design:paramtypes", [pagination_dto_1.PaginationDto, Object, Object]),
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "getAll", null);
 __decorate([

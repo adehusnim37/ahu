@@ -18,6 +18,7 @@ async function bootstrap() {
             throw new common_1.BadRequestException(result);
         },
         stopAtFirstError: true,
+        forbidNonWhitelisted: true,
     }));
     app.useGlobalFilters(new http_exceptions_filter_1.HttpExceptionFilter());
     app.useGlobalFilters(new prisma_exception_filter_1.PrismaExceptionFilter());
