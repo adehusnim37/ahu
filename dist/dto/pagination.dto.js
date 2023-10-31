@@ -43,7 +43,7 @@ __decorate([
 ], PaginationDto.prototype, "sortBy", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsBoolean)(),
+    (0, class_validator_1.IsBooleanString)(),
     __metadata("design:type", Boolean)
 ], PaginationDto.prototype, "isSortAscending", void 0);
 //# sourceMappingURL=pagination.dto.js.map

@@ -79,9 +79,17 @@ export class APHService {
             where: {id: id, userId: userId},
         });
 
+        const unchangeableFields = ['id', 'userId', 'namaPemohon'];
+        unchangeableFields.forEach(field => {
+            if (data[field]) {
+                delete data[field];
+            }
+        });
+
+
         if (!existingRecord) throw new NotFoundException("Data tidak ditemukan untuk id: " + id);
 
-        if (existingRecord.nosurat) {
+        if (existingRecord.nosurat && existingRecord.nosurat === data.nosurat) {
             throw new ConflictException('No surat sudah ada!');
         }
 

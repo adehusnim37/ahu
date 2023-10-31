@@ -17,9 +17,8 @@ class CreateUpdateAphDto {
 }
 exports.CreateUpdateAphDto = CreateUpdateAphDto;
 __decorate([
-    (0, class_validator_1.IsNotEmpty)({ message: 'ID tidak boleh kosong.' }),
-    (0, class_validator_1.IsString)({ message: 'ID harus berupa string.' }),
-    (0, class_validator_1.IsUUID)('4', { message: 'ID harus UUID & harus versi 4.' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsUUID)('all', { message: 'ID harus valid uuid.' }),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "id", void 0);
 __decorate([
@@ -69,7 +68,6 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)({ message: 'Alamat Notaris harus berupa string.' }),
-    (0, class_validator_1.Length)(20, 100, { message: 'Alamat Notaris harus antara 20 hingga 100 karakter.' }),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "alamat_notaris", void 0);
 __decorate([
@@ -79,7 +77,7 @@ __decorate([
 ], CreateUpdateAphDto.prototype, "no_akta_notaris", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, validateIsToday_1.IsBeforeEndOfDayToday)({ message: 'Tanggal Surat Kuasa tidak boleh melebihi akhir hari ini.' }),
+    (0, validateIsToday_1.IsBeforeEndOfDayToday)({ message: 'Tanggal Akta Notaris tidak boleh melebihi hari ini.' }),
     __metadata("design:type", Date)
 ], CreateUpdateAphDto.prototype, "tanggal_akta_notaris", void 0);
 __decorate([
@@ -89,7 +87,7 @@ __decorate([
 ], CreateUpdateAphDto.prototype, "isi_akta", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)({ message: 'Nama Instansi tidak boleh kosong.' }),
-    (0, class_validator_1.Length)(10, 100, { message: 'Nama Instansi harus antara 10 hingga 100 karakter.' }),
+    (0, class_validator_1.IsString)({ message: 'Nama Instansi harus berupa string.' }),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "nama_instansi", void 0);
 __decorate([
@@ -108,20 +106,19 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsNotEmpty)({ message: 'No Surat tidak boleh kosong.' }),
     (0, class_validator_1.IsString)({ message: 'No Surat harus berupa string.' }),
-    (0, class_validator_1.NotContains)(' ', { message: 'No Surat tidak boleh mengandung spasi' }),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "nosurat", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)({ message: 'Tanggal Surat Kuasa tidak boleh kosong.' }),
-    (0, validateIsToday_1.IsBeforeEndOfDayToday)({ message: 'Tanggal Surat Kuasa tidak boleh melebihi akhir hari ini.' }),
+    (0, validateIsToday_1.IsBeforeEndOfDayToday)({ message: 'Tanggal Surat Kuasa tidak boleh melebihi hari ini.' }),
     __metadata("design:type", Date)
 ], CreateUpdateAphDto.prototype, "tgl_surat_kuasa", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)({ message: 'Surat Permohonan tidak boleh kosong.' }),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "surat_permohonan", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)({ message: 'Bukti Permohonan tidak boleh kosong.' }),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateUpdateAphDto.prototype, "bukti_permohonan", void 0);
 __decorate([

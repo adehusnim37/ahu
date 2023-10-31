@@ -1,6 +1,6 @@
 // pagination.dto.ts
 
-import {IsOptional, IsInt, IsString, IsBoolean} from 'class-validator';
+import {IsOptional, IsInt, IsString, IsBoolean, IsBooleanString} from 'class-validator';
 import { Type } from 'class-transformer';
 
 
@@ -26,6 +26,6 @@ export class PaginationDto {
     sortBy?: string;
 
     @IsOptional()
-    @IsBoolean()
+    @IsBooleanString()
     isSortAscending?: boolean;
 }

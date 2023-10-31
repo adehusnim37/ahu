@@ -73,9 +73,15 @@ let APHService = class APHService {
         const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
             where: { id: id, userId: userId },
         });
+        const unchangeableFields = ['id', 'userId', 'namaPemohon'];
+        unchangeableFields.forEach(field => {
+            if (data[field]) {
+                delete data[field];
+            }
+        });
         if (!existingRecord)
             throw new common_1.NotFoundException("Data tidak ditemukan untuk id: " + id);
-        if (existingRecord.nosurat) {
+        if (existingRecord.nosurat && existingRecord.nosurat === data.nosurat) {
             throw new common_1.ConflictException('No surat sudah ada!');
         }
         if (existingRecord.isSubmit) {

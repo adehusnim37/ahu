@@ -5,16 +5,15 @@ import {
     IsString,
     Length,
     IsEnum,
-    IsOptional, NotContains, IsUUID,
+    IsOptional, IsUUID,
 } from "class-validator";
 import {Status} from "@prisma/client";
 import {IsBeforeEndOfDayToday} from "../../config/date/validateIsToday";
 
 export class CreateUpdateAphDto {
 
-    @IsNotEmpty({ message: 'ID tidak boleh kosong.' })
-    @IsString({ message: 'ID harus berupa string.' })
-    @IsUUID('4', { message: 'ID harus UUID & harus versi 4.' })
+    @IsOptional()
+    @IsUUID('all', { message: 'ID harus valid uuid.' })
     id: string;
 
     @IsOptional()
@@ -54,7 +53,6 @@ export class CreateUpdateAphDto {
 
     @IsOptional()
     @IsString({ message: 'Alamat Notaris harus berupa string.' })
-    @Length(20, 100, { message: 'Alamat Notaris harus antara 20 hingga 100 karakter.' })
     alamat_notaris: string;
 
     @IsOptional()
@@ -62,7 +60,7 @@ export class CreateUpdateAphDto {
     no_akta_notaris: string;
 
     @IsOptional()
-    @IsBeforeEndOfDayToday({ message: 'Tanggal Surat Kuasa tidak boleh melebihi akhir hari ini.' })
+    @IsBeforeEndOfDayToday({ message: 'Tanggal Akta Notaris tidak boleh melebihi hari ini.' })
     tanggal_akta_notaris: Date;
 
     @IsOptional()
@@ -70,7 +68,7 @@ export class CreateUpdateAphDto {
     isi_akta: string;
 
     @IsNotEmpty({ message: 'Nama Instansi tidak boleh kosong.' })
-    @Length(10, 100, { message: 'Nama Instansi harus antara 10 hingga 100 karakter.' })
+    @IsString({ message: 'Nama Instansi harus berupa string.' })
     nama_instansi: string;
 
     @IsNotEmpty({ message: 'Unit Instansi tidak boleh kosong.' })
@@ -85,17 +83,16 @@ export class CreateUpdateAphDto {
 
     @IsNotEmpty({ message: 'No Surat tidak boleh kosong.' })
     @IsString({ message: 'No Surat harus berupa string.' })
-    @NotContains(' ', { message: 'No Surat tidak boleh mengandung spasi' })
     nosurat: string;
 
     @IsNotEmpty({ message: 'Tanggal Surat Kuasa tidak boleh kosong.' })
-    @IsBeforeEndOfDayToday({ message: 'Tanggal Surat Kuasa tidak boleh melebihi akhir hari ini.' })
+    @IsBeforeEndOfDayToday({ message: 'Tanggal Surat Kuasa tidak boleh melebihi hari ini.' })
     tgl_surat_kuasa: Date;
 
-    @IsNotEmpty({ message: 'Surat Permohonan tidak boleh kosong.' })
+    @IsOptional()
     surat_permohonan: string;
 
-    @IsNotEmpty({ message: 'Bukti Permohonan tidak boleh kosong.' })
+    @IsOptional()
     bukti_permohonan: string;
 
     @IsOptional()

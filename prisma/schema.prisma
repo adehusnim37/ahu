@@ -24,15 +24,15 @@ model pemeriksaanAPH {
   alamat_notaris       String?
   no_akta_notaris      String?
   tanggal_akta_notaris DateTime?
-  isi_akta             String
+  isi_akta             String?
   nama_instansi        String
   unit_instansi        String
   jabatan_instansi     String
   alamat_instansi      String
   nosurat              String    @unique
   tgl_surat_kuasa      DateTime
-  surat_permohonan     String
-  bukti_permohonan     String
+  surat_permohonan     String?
+  bukti_permohonan     String?
   status               Status    @default(draft)
   recInsert            DateTime  @default(now())
   recUpdate            DateTime?
