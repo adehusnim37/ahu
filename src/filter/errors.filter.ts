@@ -9,3 +9,12 @@ export function createErrorResponse404(res, message) {
         message: ` ${message}`
     });
 }
+
+export function createErrorResponse(res, req, error) {
+    return res.status(error.status).json({
+        statusCode: error.status,
+        message: error['response']['message'],
+        timestamp: new Date().toISOString(),
+        path: req.url,
+    });
+}

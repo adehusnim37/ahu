@@ -1,8 +1,7 @@
 import { Prisma, Status } from "@prisma/client";
 
 export class pemeriksaanAPHModel implements Prisma.pemeriksaanAPHCreateInput {
-
-    id: string;
+  id: string;
   userId: string;
   namaPemohon: string;
   NRP: string;
@@ -32,7 +31,6 @@ export class pemeriksaanAPHModel implements Prisma.pemeriksaanAPHCreateInput {
   CatatanTolak?: string
   isSubmit?: boolean;
   dateSubmit?: Date;
-
 }
 
 

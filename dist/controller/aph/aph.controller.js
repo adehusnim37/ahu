@@ -17,8 +17,10 @@ const common_1 = require("@nestjs/common");
 const aph_service_1 = require("./aph.service");
 const createAndUpdate_dto_1 = require("../../dto/aph/createAndUpdate.dto");
 const pagination_dto_1 = require("../../dto/pagination.dto");
-const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
 const errors_filter_1 = require("../../filter/errors.filter");
+const role_guard_1 = require("../../auth/role/role.guard");
+const role_decorator_1 = require("../../auth/role/role.decorator");
+const role_enum_1 = require("../../config/enum/role.enum");
 let APHController = class APHController {
     constructor(APHService) {
         this.APHService = APHService;
@@ -26,10 +28,11 @@ let APHController = class APHController {
     async getAll(PaginationDto, res, req) {
         try {
             const userId = req['username'].id;
-            const admin = req['username'].role.includes('admin');
+            console.log('before get all aph');
             const { pageIndex, pageSize } = PaginationDto;
-            const APH = await this.APHService.getAllAPH(admin ? undefined : userId, PaginationDto);
-            const totalAPH = await this.APHService.getCountAPH(admin ? undefined : userId);
+            const APH = await this.APHService.getAllAPH(userId, PaginationDto);
+            console.log('after get all aph');
+            const totalAPH = await this.APHService.getCountAPH(userId);
             console.log(totalAPH);
             const page = {
                 count: totalAPH,
@@ -234,7 +237,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "delete", null);
 exports.APHController = APHController = __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.AuthGuard),
+    (0, common_1.UseGuards)(role_guard_1.RolesGuard),
+    (0, role_decorator_1.Roles)(role_enum_1.Role.Notaris),
     (0, common_1.Controller)('api/v1/aph'),
     __metadata("design:paramtypes", [aph_service_1.APHService])
 ], APHController);

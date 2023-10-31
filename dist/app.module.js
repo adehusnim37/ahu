@@ -13,6 +13,8 @@ const file_upload_module_1 = require("./file-upload/file-upload.module");
 const minio_client_module_1 = require("./minio-client/minio-client.module");
 const rate_limiter_module_1 = require("./rate-limit/rate-limiter.module");
 const auth_module_1 = require("./auth/auth.module");
+const jwt_auth_guard_1 = require("./auth/jwt-auth.guard");
+const core_1 = require("@nestjs/core");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -20,7 +22,12 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [aph_module_1.AphModule, file_upload_module_1.FileUploadModule, minio_client_module_1.MinioClientModule, rate_limiter_module_1.RateLimiterModule, auth_module_1.AuthModule],
         controllers: [],
-        providers: [],
+        providers: [
+            {
+                provide: core_1.APP_GUARD,
+                useClass: jwt_auth_guard_1.AuthGuard,
+            },
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

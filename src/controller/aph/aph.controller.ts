@@ -9,19 +9,22 @@ import {
     Post,
     Put, Query,
     Request,
-    Response,
-    UseGuards,
+    Response, UseGuards,
     ValidationPipe,
 } from '@nestjs/common';
 import {APHService} from './aph.service';
 import {pemeriksaanAPHModel} from "../../model/aph/aph.model";
 import {CreateUpdateAphDto} from '../../dto/aph/createAndUpdate.dto';
 import {PaginationDto} from "../../dto/pagination.dto";
-import {AuthGuard} from "../../auth/jwt-auth.guard";
 import {createErrorResponse400, createErrorResponse404} from "../../filter/errors.filter";
+import {RolesGuard} from "../../auth/role/role.guard";
+import {Roles} from "../../auth/role/role.decorator";
+import {Role} from "../../config/enum/role.enum";
 
 
-@UseGuards(AuthGuard)
+
+@UseGuards( RolesGuard)
+@Roles(Role.Notaris)
 @Controller('api/v1/aph')
 export class APHController {
 
@@ -38,14 +41,15 @@ export class APHController {
     ): Promise<any> {
         try {
             const userId = req['username'].id;
-            const admin = req['username'].role.includes('admin');
+            console.log('before get all aph');
             const { pageIndex, pageSize } = PaginationDto;
             const APH = await this.APHService.getAllAPH(
-                admin ? undefined : userId,
+                 userId,
                 PaginationDto,
             );
+            console.log('after get all aph');
 
-            const totalAPH = await this.APHService.getCountAPH(admin ? undefined : userId);
+            const totalAPH = await this.APHService.getCountAPH( userId);
             console.log(totalAPH);
 
             // if pageIndex and pageSize is not null, then create default pagination pagesize is 10 and pageIndex is 1

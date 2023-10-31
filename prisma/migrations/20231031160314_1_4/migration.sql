@@ -13,15 +13,15 @@ CREATE TABLE `pemeriksaanAPH` (
     `alamat_notaris` VARCHAR(191) NULL,
     `no_akta_notaris` VARCHAR(191) NULL,
     `tanggal_akta_notaris` DATETIME(3) NULL,
-    `isi_akta` VARCHAR(191) NOT NULL,
+    `isi_akta` VARCHAR(191) NULL,
     `nama_instansi` VARCHAR(191) NOT NULL,
     `unit_instansi` VARCHAR(191) NOT NULL,
     `jabatan_instansi` VARCHAR(191) NOT NULL,
     `alamat_instansi` VARCHAR(191) NOT NULL,
     `nosurat` VARCHAR(191) NOT NULL,
     `tgl_surat_kuasa` DATETIME(3) NOT NULL,
-    `surat_permohonan` VARCHAR(191) NOT NULL,
-    `bukti_permohonan` VARCHAR(191) NOT NULL,
+    `surat_permohonan` VARCHAR(191) NULL,
+    `bukti_permohonan` VARCHAR(191) NULL,
     `status` ENUM('draft', 'menungguVerifikasi', 'diterima') NOT NULL DEFAULT 'draft',
     `recInsert` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `recUpdate` DATETIME(3) NULL,
@@ -31,7 +31,6 @@ CREATE TABLE `pemeriksaanAPH` (
     `isSubmit` BOOLEAN NOT NULL DEFAULT false,
     `dateSubmit` DATETIME(3) NULL,
 
-    UNIQUE INDEX `pemeriksaanAPH_notaris_id_key`(`notaris_id`),
     UNIQUE INDEX `pemeriksaanAPH_nosurat_key`(`nosurat`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
