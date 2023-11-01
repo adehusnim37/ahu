@@ -9,6 +9,7 @@ import {
 } from "class-validator";
 import {Status} from "@prisma/client";
 import {IsBeforeEndOfDayToday} from "../../config/date/validateIsToday";
+import {Transform, TransformFnParams} from "class-transformer";
 
 export class CreateAphDto {
 
@@ -83,6 +84,7 @@ export class CreateAphDto {
 
     @IsNotEmpty({ message: 'No Surat tidak boleh kosong.' })
     @IsString({ message: 'No Surat harus berupa string.' })
+    @Transform(({ value }: TransformFnParams) => value?.trim())
     nosurat: string;
 
     @IsNotEmpty({ message: 'Tanggal Surat Kuasa tidak boleh kosong.' })

@@ -33,7 +33,6 @@ __decorate([
 ], PaginationDto.prototype, "pageSize", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], PaginationDto.prototype, "stringPencarian", void 0);
 __decorate([
@@ -43,7 +42,7 @@ __decorate([
 ], PaginationDto.prototype, "sortBy", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsBooleanString)(),
-    __metadata("design:type", Boolean)
+    (0, class_validator_1.IsEnum)(['true', 'false'], { message: 'isSortAscending must be true or false' }),
+    __metadata("design:type", String)
 ], PaginationDto.prototype, "isSortAscending", void 0);
 //# sourceMappingURL=pagination.dto.js.map

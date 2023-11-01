@@ -3,5 +3,5 @@ export declare class PaginationDto {
     pageSize?: number;
     stringPencarian?: string;
     sortBy?: string;
-    isSortAscending?: boolean;
+    isSortAscending?: string;
 }
