@@ -10,7 +10,7 @@ import {
 import {Status} from "@prisma/client";
 import {IsBeforeEndOfDayToday} from "../../config/date/validateIsToday";
 
-export class CreateUpdateAphDto {
+export class CreateAphDto {
 
     @IsOptional()
     @IsUUID('all', { message: 'ID harus valid uuid.' })

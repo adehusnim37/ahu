@@ -15,12 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.APHController = void 0;
 const common_1 = require("@nestjs/common");
 const aph_service_1 = require("./aph.service");
-const createAndUpdate_dto_1 = require("../../dto/aph/createAndUpdate.dto");
+const Create_dto_1 = require("../../dto/aph/Create.dto");
 const pagination_dto_1 = require("../../dto/pagination.dto");
 const errors_filter_1 = require("../../filter/errors.filter");
 const role_guard_1 = require("../../auth/role/role.guard");
 const role_decorator_1 = require("../../auth/role/role.decorator");
 const role_enum_1 = require("../../config/enum/role.enum");
+const update_dto_1 = require("../../dto/aph/update.dto");
 let APHController = class APHController {
     constructor(APHService) {
         this.APHService = APHService;
@@ -205,7 +206,7 @@ __decorate([
     __param(1, (0, common_1.Request)()),
     __param(2, (0, common_1.Response)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [createAndUpdate_dto_1.CreateUpdateAphDto, Object, Object]),
+    __metadata("design:paramtypes", [Create_dto_1.CreateAphDto, Object, Object]),
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "create", null);
 __decorate([
@@ -224,7 +225,7 @@ __decorate([
     __param(2, (0, common_1.Response)()),
     __param(3, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, createAndUpdate_dto_1.CreateUpdateAphDto, Object, Object]),
+    __metadata("design:paramtypes", [String, update_dto_1.UpdatePemeriksaanAPHDto, Object, Object]),
     __metadata("design:returntype", Promise)
 ], APHController.prototype, "update", null);
 __decorate([

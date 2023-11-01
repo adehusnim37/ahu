@@ -6,24 +6,30 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HttpExceptionFilter = exports.getErrorMessage = void 0;
+exports.HttpExceptionFilter = void 0;
 const common_1 = require("@nestjs/common");
-const getErrorMessage = (exception) => {
-    return exception instanceof common_1.HttpException
-        ? exception.message
-        : String(exception);
+const errorMessageTranslations = {
+    'Forbidden resource': 'Sumber daya dilarang untuk diakses',
+    'Bad Request': 'Permintaan Buruk',
+    'Internal Server Error': 'Kesalahan Server Internal',
+    'Not Found': 'Tidak Ditemukan',
+    'Unauthorized': 'Tidak Sah',
+    'OK': 'Baik',
 };
-exports.getErrorMessage = getErrorMessage;
+const translateMessage = (message) => {
+    return errorMessageTranslations[message] || message;
+};
 let HttpExceptionFilter = class HttpExceptionFilter {
     catch(exception, host) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse();
         const request = ctx.getRequest();
         const status = exception.getStatus();
-        const message = exception;
+        const defaultMessage = response.statusMessage;
+        const message = exception.getResponse()['message'] || defaultMessage;
         response.status(status).json({
             statusCode: status,
-            message: message['response']['message'],
+            message: translateMessage(message),
             timestamp: new Date().toISOString(),
             path: request.url,
         });

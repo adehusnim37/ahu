@@ -86,11 +86,18 @@ export class APHService {
             }
         });
 
-
         if (!existingRecord) throw new NotFoundException("Data tidak ditemukan untuk id: " + id);
 
-        if (existingRecord.nosurat && existingRecord.nosurat === data.nosurat) {
-            throw new ConflictException('No surat sudah ada!');
+        // If 'nosurat' in the incoming data is different from the existing record
+        if (existingRecord.nosurat !== data.nosurat) {
+            // Check if there's another record with the same 'nosurat' value
+            const isNosuratExisting = await this.prisma.pemeriksaanAPH.findUnique({
+                where: { nosurat: data.nosurat }
+            });
+
+            if (isNosuratExisting) {
+                throw new ConflictException('No surat sudah ada!');
+            }
         }
 
         if (existingRecord.isSubmit) {
@@ -104,6 +111,7 @@ export class APHService {
             }
         });
     }
+
 
     async deleteAPH(id: string, userId): Promise<pemeriksaanAPHModel> {
         const existingRecord = await this.prisma.pemeriksaanAPH.findUnique({
