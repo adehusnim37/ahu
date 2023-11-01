@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import {APHService} from './aph.service';
 import {pemeriksaanAPHModel} from "../../model/aph/aph.model";
-import {CreateUpdateAphDto} from '../../dto/aph/createAndUpdate.dto';
+import {CreateAphDto} from '../../dto/aph/Create.dto';
 import {PaginationDto} from "../../dto/pagination.dto";
 import {createErrorResponse400, createErrorResponse404} from "../../filter/errors.filter";
 import {RolesGuard} from "../../auth/role/role.guard";
@@ -47,11 +47,8 @@ export class APHController {
                  userId,
                 PaginationDto,
             );
-            console.log('after get all aph');
-
+            console.log(PaginationDto)
             const totalAPH = await this.APHService.getCountAPH( userId);
-            console.log(totalAPH);
-
             // if pageIndex and pageSize is not null, then create default pagination pagesize is 10 and pageIndex is 1
             const page = {
                 count: totalAPH,
@@ -104,7 +101,7 @@ export class APHController {
 
 
     @Post()
-    async create(@Body(ValidationPipe) postdata: CreateUpdateAphDto, @Request() req: Request, @Response() res): Promise<pemeriksaanAPHModel> {
+    async create(@Body(ValidationPipe) postdata: CreateAphDto, @Request() req: Request, @Response() res): Promise<pemeriksaanAPHModel> {
         try {
             // Extract user data from the request object
             const userId = req['username'].id;
@@ -169,7 +166,7 @@ export class APHController {
 
     //check if the status is Diterima cannot be updated
     @Put(':id')
-    async update(@Param('id') id: string, @Body() postdata: CreateUpdateAphDto, @Response() res, @Request() req: Request): Promise<pemeriksaanAPHModel> {
+    async update(@Param('id') id: string, @Body() postdata: CreateAphDto, @Response() res, @Request() req: Request): Promise<pemeriksaanAPHModel> {
         try {
             const userId = req['username'].id;
             const admin = req['username'].role.includes('admin');
@@ -189,7 +186,6 @@ export class APHController {
                 data: err.message,
             });
         }
-
     }
 
     @Delete(':id')

@@ -81,8 +81,13 @@ let APHService = class APHService {
         });
         if (!existingRecord)
             throw new common_1.NotFoundException("Data tidak ditemukan untuk id: " + id);
-        if (existingRecord.nosurat && existingRecord.nosurat === data.nosurat) {
-            throw new common_1.ConflictException('No surat sudah ada!');
+        if (existingRecord.nosurat !== data.nosurat) {
+            const isNosuratExisting = await this.prisma.pemeriksaanAPH.findUnique({
+                where: { nosurat: data.nosurat }
+            });
+            if (isNosuratExisting) {
+                throw new common_1.ConflictException('No surat sudah ada!');
+            }
         }
         if (existingRecord.isSubmit) {
             throw new common_1.ConflictException('Data telah disubmit!');
