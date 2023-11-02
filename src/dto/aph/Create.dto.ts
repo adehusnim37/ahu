@@ -83,7 +83,7 @@ export class CreateAphDto {
     alamat_instansi: string;
 
     @IsNotEmpty({ message: 'No Surat tidak boleh kosong.' })
-    @IsString({ message: 'No Surat harus berupa string.' })
+    @IsString({ message: 'No Surat harus berupa string. ' })
     @Transform(({ value }: TransformFnParams) => value?.trim())
     nosurat: string;
 
