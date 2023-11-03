@@ -20,12 +20,14 @@ import {createErrorResponse400, createErrorResponse404} from "../../filter/error
 import {RolesGuard} from "../../auth/role/role.guard";
 import {Roles} from "../../auth/role/role.decorator";
 import {Role} from "../../config/enum/role.enum";
+import {ApiTags} from "@nestjs/swagger";
 
 
 
 @UseGuards( RolesGuard)
 @Roles(Role.Notaris)
 @Controller('api/v1/aph')
+@ApiTags('aph')
 export class APHController {
 
     constructor(

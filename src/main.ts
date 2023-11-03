@@ -3,6 +3,7 @@ import {AppModule} from './app.module';
 import { PrismaExceptionFilter } from './config/prisma/prisma-exception.filter';
 import { ValidationPipe, BadRequestException } from '@nestjs/common';
 import {HttpExceptionFilter} from "./filter/http-exceptions.filter";
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {cors: true});
@@ -27,6 +28,16 @@ async function bootstrap() {
             forbidNonWhitelisted: true,
         }),
     );
+
+    const config = new DocumentBuilder()
+        .setTitle('APH Pemeriksaan API')
+        .setDescription('Pemeriksaan APH API Documentation')
+        .setVersion('1.0')
+        .addBearerAuth() // If you have authentication, add this line
+        .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document);
 
     app.useGlobalFilters(new HttpExceptionFilter());
 
