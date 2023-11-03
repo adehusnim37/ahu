@@ -42,7 +42,7 @@ export class APHService {
 
         // if the data length is 0, then return error message
         if ((await this.prisma.pemeriksaanAPH.findMany(query)).length == 0) {
-            throw new NotFoundException('Data tidak ditemukan! Silahkan tambah data terlebih dahulu.');
+            throw new NotFoundException('Data tidak ditemukan! Silahkan tambah data terlebih dahulu. ');
         }
         // Use Prisma Client to fetch the data based on the query
         return this.prisma.pemeriksaanAPH.findMany(query);
